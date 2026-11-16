@@ -14,78 +14,94 @@
 
 // LocalStorage Keys
 const STORAGE_KEYS = {
-  CATALOG: 'biz_portal_catalog_v1',
-  ENQUIRIES: 'biz_portal_enquiries_v1',
-  SETTINGS: 'biz_portal_settings_v1',
-  AUTH: 'biz_portal_admin_session',
-  PASSWORD: 'biz_portal_admin_password'
+  CATALOG: 'om_traders_catalog_v2',
+  ENQUIRIES: 'om_traders_enquiries_v2',
+  SETTINGS: 'om_traders_settings_v2',
+  AUTH: 'om_traders_admin_session',
+  PASSWORD: 'om_traders_admin_password'
 };
 
-// Default Sample Catalog Data
+// Default Sample Catalog Data (Building & Plumbing Materials)
 const DEFAULT_CATALOG = [
   {
     id: 'prod-1',
-    name: 'Professional Business Website',
-    category: 'Digital Services',
-    price: 499,
-    unit: 'per project',
-    description: 'Custom 5-page responsive website with mobile optimization, contact form & SEO-ready structure.'
+    name: 'UltraTech PPC Cement (50kg Bag)',
+    category: 'Cement & Aggregates',
+    price: 380,
+    unit: 'per 50kg bag',
+    description: 'Premium Portland Pozzolana Cement for high-strength foundation and slab casting.'
   },
   {
     id: 'prod-2',
-    name: 'E-Commerce Storefront Setup',
-    category: 'Digital Services',
-    price: 899,
-    unit: 'per project',
-    description: 'Online store with shopping cart, product catalog, payment gateway and inventory tracking.'
+    name: 'TMT Steel Rebars Fe 550D (12mm)',
+    category: 'Steel & TMT',
+    price: 58500,
+    unit: 'per metric ton',
+    description: 'High-ductility earthquake-resistant TMT steel rebars suitable for RCC structures.'
   },
   {
     id: 'prod-3',
-    name: 'Monthly SEO & Growth Campaign',
-    category: 'Marketing',
-    price: 250,
-    unit: 'per month',
-    description: 'Targeted keyword research, on-page SEO optimization, technical fixes, and monthly ranking reports.'
+    name: 'Astral CPVC Pro Pipe (1" SDR 11 - 10ft)',
+    category: 'Plumbing & Pipes',
+    price: 320,
+    unit: 'per 10ft length',
+    description: 'Hot and cold potable water distribution pipe, lead-free and high-pressure rated.'
   },
   {
     id: 'prod-4',
-    name: 'Social Media Ad Campaign Management',
-    category: 'Marketing',
-    price: 350,
-    unit: 'per month',
-    description: 'Creative design, ad copywriting, audience targeting, and budget optimization across Meta & Google.'
+    name: 'Supreme PVC SWR Pipe (4" 110mm - 10ft)',
+    category: 'Plumbing & Pipes',
+    price: 480,
+    unit: 'per 10ft length',
+    description: 'Heavy-duty soil, waste and rainwater drainage pipe with ring-fit leakproof joint.'
   },
   {
     id: 'prod-5',
-    name: 'Cloud Infrastructure & Server Setup',
-    category: 'Cloud & IT',
-    price: 400,
-    unit: 'per setup',
-    description: 'Secure cloud hosting deployment (AWS / Google Cloud) with automated daily backups and SSL certificates.'
+    name: 'CPVC Brass Elbow (1" x 1/2")',
+    category: 'Plumbing & Pipes',
+    price: 85,
+    unit: 'per piece',
+    description: 'Threaded heavy brass insert CPVC elbow for secure tap and shower connections.'
   },
   {
     id: 'prod-6',
-    name: 'Annual IT Support & Maintenance',
-    category: 'Cloud & IT',
-    price: 150,
-    unit: 'per month',
-    description: '24/7 server health monitoring, security updates, regular bug fixes, and prioritized helpdesk support.'
+    name: 'Brass Bib Cock Water Tap with Flange',
+    category: 'Sanitary & Fittings',
+    price: 290,
+    unit: 'per piece',
+    description: 'Solid brass chrome-plated wall-mounted water tap with ceramic cartridge.'
   },
   {
     id: 'prod-7',
-    name: 'Strategic Business Consultation',
-    category: 'Consulting',
-    price: 120,
-    unit: 'per hour',
-    description: '1-on-1 strategic session with senior advisors to assess business workflow, tooling, and revenue growth.'
+    name: 'Ceramic Floor-Mount EWC Commode Set',
+    category: 'Sanitary & Fittings',
+    price: 2650,
+    unit: 'per set',
+    description: 'Western toilet commode with dual flush cistern, soft-close seat cover and gasket.'
   },
   {
     id: 'prod-8',
-    name: 'High-Performance Workstation Bundle',
-    category: 'Hardware & Setup',
-    price: 750,
-    unit: 'per unit',
-    description: 'Configured corporate desktop with dual 24-inch monitors, wireless peripherals, and warranty.'
+    name: 'Dr. Fixit 101 LW+ Waterproofing (20L)',
+    category: 'Waterproofing & Chemicals',
+    price: 2450,
+    unit: 'per 20L drum',
+    description: 'Integral liquid waterproofing compound for concrete and mortar plastering.'
+  },
+  {
+    id: 'prod-9',
+    name: 'First-Class Red Clay Bricks (1000 Pcs)',
+    category: 'Bricks & Masonry',
+    price: 7500,
+    unit: 'per 1000 pcs',
+    description: 'High compressive strength kiln-burnt red clay bricks for masonry load-bearing walls.'
+  },
+  {
+    id: 'prod-10',
+    name: 'Birla White Wall Putty (40kg Bag)',
+    category: 'Finishing & Paint',
+    price: 790,
+    unit: 'per 40kg bag',
+    description: 'White cement-based polymer modified wall care putty for smooth, crack-resistant walls.'
   }
 ];
 
@@ -94,49 +110,52 @@ const DEFAULT_ENQUIRIES = [
   {
     id: 'ENQ-2026-9102',
     date: '2026-11-12 10:30 AM',
-    name: 'Michael Reynolds',
-    email: 'michael.r@apextech.com',
-    phone: '+1 (555) 234-5678',
-    company: 'Apex Technologies LLC',
-    message: 'Looking to overhaul our corporate website before Q1 product release. Please include timeline estimates.',
+    name: 'Ramesh Kumar',
+    email: 'ramesh.builders@gmail.com',
+    phone: '+91 98230 11223',
+    company: 'Ramesh Construction & Contractors',
+    message: 'Need urgent delivery of 150 bags UltraTech cement and 2 tons 12mm TMT steel for site at Sector 4.',
     items: [
-      { name: 'Professional Business Website', qty: 1, unit: 'per project', rate: 499, total: 499 },
-      { name: 'Monthly SEO & Growth Campaign', qty: 1, unit: 'per month', rate: 250, total: 250 }
+      { name: 'UltraTech PPC Cement (50kg Bag)', qty: 150, unit: 'per 50kg bag', rate: 380, total: 57000 },
+      { name: 'TMT Steel Rebars Fe 550D (12mm)', qty: 2, unit: 'per metric ton', rate: 58500, total: 117000 }
     ],
-    subtotal: 749,
-    taxAmount: 134.82,
-    total: 883.82,
+    subtotal: 174000,
+    taxAmount: 31320,
+    total: 205320,
     status: 'Contacted'
   },
   {
     id: 'ENQ-2026-9103',
     date: '2026-11-14 09:15 AM',
-    name: 'Sarah Chen',
-    email: 'sarah.chen@greenpeak.org',
-    phone: '+1 (555) 876-5432',
-    company: 'GreenPeak Organics',
-    message: 'We are launching an online organic grocery delivery service and need an e-commerce platform.',
+    name: 'Deepak Sharma',
+    email: 'deepak.sharma@yahoo.com',
+    phone: '+91 97110 44556',
+    company: 'Sharma Home Renovation',
+    message: 'Plumbing materials required for 2 bathrooms and kitchen renovation.',
     items: [
-      { name: 'E-Commerce Storefront Setup', qty: 1, unit: 'per project', rate: 899, total: 899 }
+      { name: 'Astral CPVC Pro Pipe (1" SDR 11 - 10ft)', qty: 15, unit: 'per 10ft length', rate: 320, total: 4800 },
+      { name: 'CPVC Brass Elbow (1" x 1/2")', qty: 20, unit: 'per piece', rate: 85, total: 1700 },
+      { name: 'Brass Bib Cock Water Tap with Flange', qty: 6, unit: 'per piece', rate: 290, total: 1740 }
     ],
-    subtotal: 899,
-    taxAmount: 161.82,
-    total: 1060.82,
+    subtotal: 8240,
+    taxAmount: 1483.20,
+    total: 9723.20,
     status: 'New'
   }
 ];
 
-// Default Business Settings
+// Default Business Settings Matching Lovable Screenshot
 const DEFAULT_SETTINGS = {
-  businessName: 'Apex Business Solutions',
-  tagline: 'Instant Quotation & Client Services',
-  currency: '$',
+  businessName: 'OM TRADERS',
+  tagline: 'KALWAN, NASHIK',
+  city: 'Kalwan, Nashik, Maharashtra',
+  currency: '₹',
   taxRate: 18,
-  phone: '+1 (800) 555-0199',
-  whatsapp: '18005550199',
-  email: 'contact@apexsolutions.com',
-  address: 'Suite 400, Financial District, New York, NY',
-  terms: '1. Quotation valid for 30 calendar days from the date of issue.\n2. 50% mobilization advance upon contract signing.\n3. Applicable local statutory taxes included as calculated.',
+  phone: '+91 98765 43210',
+  whatsapp: '919876543210',
+  email: 'omtraders.kalwan@gmail.com',
+  address: 'Main Market, Opp. ST Bus Stand, Kalwan, Nashik, Maharashtra 423501',
+  terms: '1. Rates are subject to market fluctuations (especially Steel & Cement) and valid for 7 days.\n2. Loading, unloading, and transportation freight charges extra at actuals.\n3. Goods once dispatched will be verified on site by the client.',
   adminPassword: 'admin123'
 };
 
@@ -268,64 +287,66 @@ function formatCurrency(amount) {
 function renderCatalogGrid() {
   const grid = document.getElementById('catalog-grid');
   const emptyState = document.getElementById('catalog-empty-state');
+  if (!grid) return;
   grid.innerHTML = '';
 
   const filtered = AppState.catalog.filter(item => {
     const matchesCategory = (AppState.activeCategory === 'ALL') || (item.category === AppState.activeCategory);
-    const searchLow = AppState.searchQuery.toLowerCase();
+    const searchLow = (AppState.searchQuery || '').toLowerCase();
     const matchesSearch = !searchLow || 
-      item.name.toLowerCase().includes(searchLow) || 
+      (item.name && item.name.toLowerCase().includes(searchLow)) || 
       (item.description && item.description.toLowerCase().includes(searchLow)) ||
       (item.category && item.category.toLowerCase().includes(searchLow));
     return matchesCategory && matchesSearch;
   });
 
-  document.getElementById('total-catalog-count').textContent = AppState.catalog.length;
+  const countEl = document.getElementById('total-catalog-count');
+  if (countEl) countEl.textContent = AppState.catalog.length;
 
   if (filtered.length === 0) {
-    emptyState.classList.remove('hidden');
+    if (emptyState) emptyState.classList.remove('hidden');
     return;
   }
-  emptyState.classList.add('hidden');
+  if (emptyState) emptyState.classList.add('hidden');
 
   filtered.forEach(item => {
     const currentQty = AppState.cart[item.id] || 0;
     const isAdded = currentQty > 0;
 
     const card = document.createElement('div');
-    card.className = `product-card bg-white rounded-2xl border p-5 flex flex-col justify-between ${isAdded ? 'border-blue-400 ring-1 ring-blue-400 shadow-md' : 'border-slate-200'}`;
+    card.className = `product-card bg-white rounded-2xl border p-5 flex flex-col justify-between ${isAdded ? 'border-orange-500 ring-2 ring-orange-500/20 shadow-md' : 'border-slate-200'}`;
 
     card.innerHTML = `
       <div>
         <div class="flex items-center justify-between gap-2 mb-2">
-          <span class="inline-block px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 text-xs font-semibold">
+          <span class="inline-block px-2.5 py-1 rounded-lg bg-orange-50 text-orange-700 text-xs font-bold">
             ${escapeHtml(item.category || 'General')}
           </span>
-          ${isAdded ? `<span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full"><i class="fa-solid fa-check mr-1"></i>In Quote (${currentQty})</span>` : ''}
+          ${isAdded ? `<span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full"><i class="fa-solid fa-check mr-1"></i>Selected (${currentQty})</span>` : ''}
         </div>
-        <h3 class="font-bold text-slate-900 text-base leading-snug">${escapeHtml(item.name)}</h3>
-        <p class="text-xs text-slate-500 mt-2 line-clamp-3 leading-relaxed">${escapeHtml(item.description || 'Professional standard offering with comprehensive execution.')}</p>
+        <h3 class="font-extrabold text-slate-900 text-base leading-snug">${escapeHtml(item.name)}</h3>
+        <p class="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed">${escapeHtml(item.description || 'Quality material supplied by Om Traders, Kalwan.')}</p>
       </div>
 
       <div class="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between">
         <div>
           <div class="text-xl font-extrabold text-slate-900">${formatCurrency(item.price)}</div>
-          <div class="text-[11px] text-slate-400 font-medium">${escapeHtml(item.unit || 'per unit')}</div>
+          <div class="text-[11px] text-slate-500 font-semibold">${escapeHtml(item.unit || 'per unit')}</div>
         </div>
 
         <div class="flex items-center gap-2">
           ${isAdded ? `
-            <div class="flex items-center rounded-xl border border-blue-300 bg-blue-50/50 p-1">
-              <button onclick="decrementCart('${item.id}')" class="w-7 h-7 rounded-lg bg-white shadow-xs hover:bg-blue-100 text-blue-700 font-bold flex items-center justify-center transition">
+            <div class="flex items-center rounded-xl border border-orange-300 bg-orange-50/50 p-1">
+              <button onclick="decrementCart('${item.id}')" class="w-7 h-7 rounded-lg bg-white shadow-xs hover:bg-orange-100 text-orange-700 font-bold flex items-center justify-center transition">
                 <i class="fa-solid fa-minus text-xs"></i>
               </button>
-              <span class="w-8 text-center text-xs font-bold text-blue-900">${currentQty}</span>
-              <button onclick="incrementCart('${item.id}')" class="w-7 h-7 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold flex items-center justify-center transition">
+              <span class="w-8 text-center text-xs font-extrabold text-orange-950">${currentQty}</span>
+              <button onclick="incrementCart('${item.id}')" class="w-7 h-7 rounded-lg bg-orange-600 hover:bg-orange-700 text-white font-bold flex items-center justify-center transition">
                 <i class="fa-solid fa-plus text-xs"></i>
               </button>
             </div>
           ` : `
-            <button onclick="addToCart('${item.id}')" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition flex items-center gap-1.5 shadow-sm">
+            <button onclick="addToCart('${item.id}')" class="px-4 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-sm">
               <i class="fa-solid fa-plus"></i> Add to Quote
             </button>
           `}
@@ -338,12 +359,13 @@ function renderCatalogGrid() {
 
 function renderCategoryPills() {
   const container = document.getElementById('category-pills');
+  if (!container) return;
   // Extract unique categories
   const categories = Array.from(new Set(AppState.catalog.map(i => i.category || 'General'))).filter(Boolean);
 
   container.innerHTML = `
-    <button onclick="setCategoryFilter('ALL')" class="category-btn ${AppState.activeCategory === 'ALL' ? 'active bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'} px-4 py-2 rounded-xl text-xs font-semibold shadow-xs transition whitespace-nowrap">
-      All Items (${AppState.catalog.length})
+    <button onclick="setCategoryFilter('ALL')" class="category-btn ${AppState.activeCategory === 'ALL' ? 'active bg-orange-600 text-white font-bold' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'} px-4 py-2 rounded-xl text-xs font-semibold shadow-xs transition whitespace-nowrap">
+      All Materials (${AppState.catalog.length})
     </button>
   `;
 
@@ -351,7 +373,7 @@ function renderCategoryPills() {
     const count = AppState.catalog.filter(i => (i.category || 'General') === cat).length;
     const btn = document.createElement('button');
     btn.onclick = () => setCategoryFilter(cat);
-    btn.className = `category-btn ${AppState.activeCategory === cat ? 'active bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'} px-4 py-2 rounded-xl text-xs font-semibold shadow-xs transition whitespace-nowrap`;
+    btn.className = `category-btn ${AppState.activeCategory === cat ? 'active bg-orange-600 text-white font-bold' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'} px-4 py-2 rounded-xl text-xs font-semibold shadow-xs transition whitespace-nowrap`;
     btn.textContent = `${cat} (${count})`;
     container.appendChild(btn);
   });
@@ -555,7 +577,65 @@ function updateEnquiryAttachedSummary() {
 function proceedToEnquiryFromQuote() {
   closeQuotationDrawer();
   const formSection = document.getElementById('enquiry-section');
-  formSection.scrollIntoView({ behavior: 'smooth' });
+  if (formSection) {
+    formSection.scrollIntoView({ behavior: 'smooth' });
+    const nameField = document.getElementById('enquiry-name');
+    if (nameField) nameField.focus();
+  }
+}
+
+// Smooth scroll to catalog section with highlight
+function scrollToCatalog() {
+  showCustomerView();
+  const catalogSection = document.getElementById('catalog-section');
+  if (catalogSection) {
+    catalogSection.scrollIntoView({ behavior: 'smooth' });
+    catalogSection.classList.add('highlight-target');
+    setTimeout(() => {
+      catalogSection.classList.remove('highlight-target');
+    }, 1600);
+  }
+}
+
+// Download / Review modal trigger
+function openDownloadReviewModal() {
+  const { items } = getCartCalculations();
+  if (items.length === 0) {
+    openQuotationDrawer();
+    showToast('Select materials from the catalog first to generate quotation!', 'info');
+    setTimeout(() => {
+      scrollToCatalog();
+    }, 600);
+    return;
+  }
+  openQuotationDrawer();
+}
+
+// Quick Contractor / Customer Registration trigger
+function openRegisterModal() {
+  showCustomerView();
+  const formSection = document.getElementById('enquiry-section');
+  if (formSection) {
+    formSection.scrollIntoView({ behavior: 'smooth' });
+    const nameField = document.getElementById('enquiry-name');
+    if (nameField) nameField.focus();
+    showToast('Enter your name and contact details to register / send enquiry', 'info');
+  }
+}
+
+// Quick Sample Material addition for test estimation
+function addSampleMaterialsToQuote() {
+  if (AppState.catalog.length >= 2) {
+    AppState.cart[AppState.catalog[0].id] = 50; // e.g. 50 bags cement
+    AppState.cart[AppState.catalog[1].id] = 1;  // e.g. 1 ton steel
+  } else if (AppState.catalog.length === 1) {
+    AppState.cart[AppState.catalog[0].id] = 10;
+  }
+  updateCartBadge();
+  renderCatalogGrid();
+  renderQuotationDrawer();
+  updateEnquiryAttachedSummary();
+  showToast('Added sample construction materials to quotation!', 'success');
 }
 
 // ==============================================================================
@@ -1099,14 +1179,37 @@ function handleSelectedExcelFile(file) {
       
       const firstSheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[firstSheetName];
-      const rawRows = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+      
+      // Read 2D array of sheet to detect true header row (skip top banners/titles)
+      const rawRows2D = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
 
-      if (rawRows.length === 0) {
+      if (!rawRows2D || rawRows2D.length === 0) {
         showToast('The uploaded Excel sheet contains no rows!', 'error');
         return;
       }
 
-      // Smart Header Mapper
+      // Detect header row index
+      let headerRowIndex = 0;
+      const headerKeywords = ['name', 'item', 'product', 'material', 'particular', 'description', 'rate', 'price', 'unit', 'category', 's.no', 'sr no', 'goods', 'amount', 'mrp'];
+      
+      for (let r = 0; r < Math.min(rawRows2D.length, 10); r++) {
+        const rowValues = rawRows2D[r].map(cell => String(cell).toLowerCase().trim());
+        const matchCount = rowValues.filter(val => headerKeywords.some(kw => val.includes(kw))).length;
+        if (matchCount >= 2) {
+          headerRowIndex = r;
+          break;
+        }
+      }
+
+      // Convert from detected header row
+      const rawRows = XLSX.utils.sheet_to_json(worksheet, { range: headerRowIndex, defval: '' });
+
+      if (rawRows.length === 0) {
+        showToast('The uploaded Excel sheet contains no data under the header row!', 'error');
+        return;
+      }
+
+      // Smart Header Mapper with Auto-Categorization
       const parsedItems = parseExcelRowsWithSmartMapper(rawRows);
 
       if (parsedItems.length === 0) {
@@ -1127,57 +1230,110 @@ function handleSelectedExcelFile(file) {
   reader.readAsArrayBuffer(file);
 }
 
+// Auto-detect building & plumbing material category from name/description
+function autoDetectMaterialCategory(name, desc) {
+  const text = ((name || '') + ' ' + (desc || '')).toLowerCase();
+  if (/cement|concrete|aggregate|sand|bajri|kapchi|mortar/i.test(text)) return 'Cement & Aggregates';
+  if (/tmt|steel|rebar|iron|sariya|wire|rod|binding/i.test(text)) return 'Steel & TMT';
+  if (/cpvc|pvc|pipe|swr|upvc|plumb|elbow|socket|tee|coupling|union|nipple/i.test(text)) return 'Plumbing & Pipes';
+  if (/tap|cock|faucet|valve|commode|basin|toilet|shower|bath|sanitary|cistern|sink/i.test(text)) return 'Sanitary & Fittings';
+  if (/waterproof|dr\.? fixit|chemical|epoxy|sealant|admixture|lw\+/i.test(text)) return 'Waterproofing & Chemicals';
+  if (/brick|block|stone|aac|paver|red clay/i.test(text)) return 'Bricks & Masonry';
+  if (/putty|paint|primer|distemper|color|colour|enamel|texture/i.test(text)) return 'Finishing & Paint';
+  if (/hardware|screw|nail|bolt|lock|hinge|handle|tool/i.test(text)) return 'Hardware & Tools';
+  return 'Building Materials';
+}
+
 // Smart column mapping that recognizes various header names
 function parseExcelRowsWithSmartMapper(rawRows) {
+  const nameKeywords = [
+    'name', 'item', 'item name', 'item_name', 'product', 'product name', 'product_name',
+    'particulars', 'particular', 'material', 'material name', 'material_name',
+    'description of goods', 'goods', 'item description', 'product description',
+    'title', 'description', 'saman', 'items'
+  ];
+
+  const priceKeywords = [
+    'price', 'unit price', 'unit_price', 'rate', 'unit rate', 'unit_rate',
+    'cost', 'amount', 'selling price', 'basic rate', 'mrp', 'fee', 'rate/unit', 'price/unit',
+    'rate per unit', 'price per unit', 'value'
+  ];
+
+  const categoryKeywords = [
+    'category', 'group', 'type', 'department', 'class', 'brand', 'make', 'head', 'sub category'
+  ];
+
+  const unitKeywords = [
+    'unit', 'uom', 'per', 'billing unit', 'billing_unit', 'frequency', 'basis', 'measure',
+    'unit of measurement', 'pkg', 'packing'
+  ];
+
+  const descKeywords = [
+    'details', 'features', 'specs', 'specification', 'specifications', 'size', 'hsn',
+    'notes', 'remarks', 'dimension', 'grade'
+  ];
+
   return rawRows.map((row, index) => {
     let name = '';
-    let category = 'Services';
+    let category = '';
     let price = 0;
-    let unit = 'per project';
+    let unit = '';
     let description = '';
 
-    // Search object keys case-insensitively
     for (const [key, val] of Object.entries(row)) {
       const cleanKey = key.trim().toLowerCase();
       const cleanVal = String(val).trim();
 
-      // Name matches
-      if (['name', 'item', 'item name', 'product', 'product name', 'service', 'service name', 'title'].includes(cleanKey)) {
+      if (nameKeywords.includes(cleanKey)) {
         name = cleanVal;
-      }
-      // Category matches
-      else if (['category', 'group', 'type', 'department', 'class'].includes(cleanKey)) {
-        category = cleanVal || 'Services';
-      }
-      // Price matches
-      else if (['price', 'unit price', 'rate', 'cost', 'amount', 'fee'].includes(cleanKey)) {
+      } else if (priceKeywords.includes(cleanKey)) {
         const num = parseFloat(String(cleanVal).replace(/[^0-9.]/g, ''));
         price = isNaN(num) ? 0 : num;
-      }
-      // Unit matches
-      else if (['unit', 'billing unit', 'per', 'frequency', 'basis'].includes(cleanKey)) {
-        unit = cleanVal || 'per unit';
-      }
-      // Description matches
-      else if (['description', 'details', 'features', 'desc', 'notes', 'specifications'].includes(cleanKey)) {
+      } else if (categoryKeywords.includes(cleanKey)) {
+        category = cleanVal;
+      } else if (unitKeywords.includes(cleanKey)) {
+        unit = cleanVal;
+      } else if (descKeywords.includes(cleanKey)) {
         description = cleanVal;
       }
     }
 
     // Fallbacks if columns had unusual names:
-    if (!name && Object.values(row)[0]) {
-      name = String(Object.values(row)[0]).trim();
+    if (!name) {
+      for (const [k, v] of Object.entries(row)) {
+        const strVal = String(v).trim();
+        if (strVal && isNaN(Number(strVal)) && strVal.length > 2) {
+          name = strVal;
+          break;
+        }
+      }
+    }
+
+    // Auto-detect category if not provided
+    if (!category) {
+      category = autoDetectMaterialCategory(name, description);
+    }
+
+    // Auto-detect unit if not provided
+    if (!unit) {
+      const nameLow = (name || '').toLowerCase();
+      if (nameLow.includes('cement')) unit = 'per 50kg bag';
+      else if (nameLow.includes('steel') || nameLow.includes('tmt')) unit = 'per metric ton';
+      else if (nameLow.includes('pipe')) unit = 'per 10ft length';
+      else if (nameLow.includes('brick')) unit = 'per 1000 pcs';
+      else if (nameLow.includes('drum') || nameLow.includes('waterproof')) unit = 'per drum';
+      else unit = 'per piece';
     }
 
     return {
       id: `xl-${Date.now()}-${index}`,
-      name: name || `Item #${index + 1}`,
-      category: category || 'General',
+      name: name || `Material #${index + 1}`,
+      category: category || 'Building Materials',
       price: price,
       unit: unit || 'per unit',
       description: description || ''
     };
-  }).filter(item => Boolean(item.name));
+  }).filter(item => Boolean(item.name && item.name !== 'undefined'));
 }
 
 function renderExcelPreview(filename, items) {
@@ -1193,7 +1349,7 @@ function renderExcelPreview(filename, items) {
     tr.className = 'hover:bg-slate-50';
     tr.innerHTML = `
       <td class="py-2 px-3 font-semibold text-slate-800">${escapeHtml(item.name)}</td>
-      <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-medium">${escapeHtml(item.category)}</span></td>
+      <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-orange-50 text-orange-700 font-bold">${escapeHtml(item.category)}</span></td>
       <td class="py-2 px-3 text-slate-500 max-w-xs truncate">${escapeHtml(item.description)}</td>
       <td class="py-2 px-3 font-bold text-slate-900">${formatCurrency(item.price)}</td>
       <td class="py-2 px-3 text-slate-500">${escapeHtml(item.unit)}</td>
@@ -1229,6 +1385,12 @@ function publishParsedExcelToCatalog() {
 
   // Replace live catalog with new Excel data
   AppState.catalog = [...AppState.excelParsedData];
+  AppState.activeCategory = 'ALL';
+  AppState.searchQuery = '';
+  
+  const searchInput = document.getElementById('catalog-search');
+  if (searchInput) searchInput.value = '';
+
   saveData(STORAGE_KEYS.CATALOG, AppState.catalog);
 
   // Clear upload state
@@ -1240,7 +1402,13 @@ function publishParsedExcelToCatalog() {
   renderAdminCatalogTable();
   updateAdminDashboardStats();
 
-  showToast(`🎉 Success! Published ${AppState.catalog.length} items live to the website quotation catalog!`, 'success');
+  showToast(`🎉 Success! Published ${AppState.catalog.length} items live to Om Traders website!`, 'success');
+
+  // Immediately switch view to customer site and smoothly scroll to the catalog!
+  showCustomerView();
+  setTimeout(() => {
+    scrollToCatalog();
+  }, 150);
 }
 
 // Download Sample Template for Admin
@@ -1252,54 +1420,61 @@ function downloadSampleExcelTemplate() {
 
   const sampleTemplateData = [
     {
-      'Category': 'Digital Services',
-      'Item Name': 'Complete Business Website',
-      'Description': '5-Page responsive corporate website with SEO and mobile layout',
-      'Unit Price': 499,
-      'Unit': 'per project'
+      'Category': 'Cement & Aggregates',
+      'Item Name': 'UltraTech PPC Cement (50kg Bag)',
+      'Description': 'Premium Portland Pozzolana Cement for foundation and slab casting',
+      'Unit Price': 380,
+      'Unit': 'per 50kg bag'
     },
     {
-      'Category': 'Digital Services',
-      'Item Name': 'Custom Mobile Application',
-      'Description': 'iOS and Android native cross-platform application design',
-      'Unit Price': 1499,
-      'Unit': 'per project'
+      'Category': 'Steel & TMT',
+      'Item Name': 'TMT Steel Rebars Fe 550D (12mm)',
+      'Description': 'High-ductility earthquake-resistant TMT rebars for RCC structures',
+      'Unit Price': 58500,
+      'Unit': 'per metric ton'
     },
     {
-      'Category': 'Marketing & SEO',
-      'Item Name': 'Monthly Search Engine Optimization',
-      'Description': 'Targeted keywords, on-page optimization, and Google ranking report',
-      'Unit Price': 250,
-      'Unit': 'per month'
+      'Category': 'Plumbing & Pipes',
+      'Item Name': 'Astral CPVC Pro Pipe (1" SDR 11 - 10ft)',
+      'Description': 'Hot and cold potable water distribution pipe, lead-free',
+      'Unit Price': 320,
+      'Unit': 'per 10ft length'
     },
     {
-      'Category': 'Cloud & IT',
-      'Item Name': 'Cloud Server Architecture & Setup',
-      'Description': 'AWS / Google Cloud automated deployment with backup retention',
-      'Unit Price': 400,
-      'Unit': 'per setup'
+      'Category': 'Plumbing & Pipes',
+      'Item Name': 'Supreme PVC SWR Pipe (4" 110mm - 10ft)',
+      'Description': 'Heavy-duty drainage pipe for soil and rainwater',
+      'Unit Price': 480,
+      'Unit': 'per 10ft length'
     },
     {
-      'Category': 'Consulting',
-      'Item Name': 'Business Process Consultation',
-      'Description': '1-on-1 strategy meeting with implementation roadmap',
-      'Unit Price': 120,
-      'Unit': 'per hour'
+      'Category': 'Sanitary & Fittings',
+      'Item Name': 'Brass Bib Cock Water Tap with Flange',
+      'Description': 'Solid brass chrome-plated wall water tap with ceramic cartridge',
+      'Unit Price': 290,
+      'Unit': 'per piece'
+    },
+    {
+      'Category': 'Waterproofing & Chemicals',
+      'Item Name': 'Dr. Fixit 101 LW+ Waterproofing (20L)',
+      'Description': 'Integral liquid waterproofing compound for plaster and concrete',
+      'Unit Price': 2450,
+      'Unit': 'per 20L drum'
     }
   ];
 
   const worksheet = XLSX.utils.json_to_sheet(sampleTemplateData);
   worksheet['!cols'] = [
-    { wch: 20 },
-    { wch: 32 },
-    { wch: 45 },
+    { wch: 24 },
+    { wch: 38 },
+    { wch: 50 },
     { wch: 14 },
-    { wch: 16 }
+    { wch: 18 }
   ];
 
   const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Catalog Template');
-  XLSX.writeFile(workbook, 'business_service_catalog_template.xlsx');
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Materials Template');
+  XLSX.writeFile(workbook, 'om_traders_material_rate_template.xlsx');
   showToast('Downloaded sample Excel template!', 'info');
 }
 
