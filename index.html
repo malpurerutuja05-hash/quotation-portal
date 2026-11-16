@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Business Quotation & Customer Interaction Portal</title>
+  <title>Om Traders | Building & Plumbing Material Supplier - Instant Quotation</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -64,50 +64,53 @@
   </div>
 
   <!-- ========================================== -->
-  <!-- MAIN HEADER / NAVBAR                      -->
+  <!-- MAIN HEADER / NAVBAR (Lovable Inspired)    -->
   <!-- ========================================== -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-20">
         
-        <!-- Brand Logo & Name -->
+        <!-- Brand Logo & Name Matching Screenshot -->
         <div class="flex items-center gap-3 cursor-pointer" onclick="showCustomerView()">
-          <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-blue-700 to-indigo-500 text-white flex items-center justify-center font-bold text-xl shadow-md shadow-blue-500/20">
-            <i class="fa-solid fa-briefcase"></i>
+          <div class="w-10 h-10 rounded-xl bg-orange-600 text-white flex items-center justify-center font-bold text-2xl shadow-md shadow-orange-500/20 select-none">
+            ॐ
           </div>
           <div>
-            <h1 id="header-brand-name" class="font-bold text-xl text-slate-900 tracking-tight leading-none">Apex Business Solutions</h1>
-            <p id="header-tagline" class="text-xs text-slate-500 mt-1">Instant Quotation & Client Services</p>
+            <div id="header-brand-name" class="font-extrabold text-xl text-slate-900 tracking-tight leading-none uppercase">OM TRADERS</div>
+            <div id="header-tagline" class="text-[10px] font-bold text-slate-500 tracking-widest uppercase mt-1">KALWAN, NASHIK</div>
           </div>
         </div>
 
-        <!-- Navigation Links -->
-        <nav class="hidden md:flex items-center gap-8 font-medium text-sm text-slate-600">
-          <a href="#catalog-section" class="hover:text-blue-600 transition" onclick="showCustomerView()">Catalog & Pricing</a>
-          <a href="#how-it-works-section" class="hover:text-blue-600 transition" onclick="showCustomerView()">How It Works</a>
-          <a href="#enquiry-section" class="hover:text-blue-600 transition" onclick="showCustomerView()">Request Quotation</a>
-          <a href="#contact-section" class="hover:text-blue-600 transition" onclick="showCustomerView()">Contact</a>
+        <!-- Navigation Links Matching Screenshot -->
+        <nav class="hidden md:flex items-center gap-8 font-semibold text-sm text-slate-700">
+          <a href="#" onclick="showCustomerView(); window.scrollTo({top:0, behavior:'smooth'}); return false;" class="hover:text-orange-600 transition">Home</a>
+          <a href="#catalog-section" onclick="scrollToCatalog(); return false;" class="hover:text-orange-600 transition">Products</a>
+          <a href="#quotation" onclick="openQuotationDrawer(); return false;" class="hover:text-orange-600 transition">Get Quotation</a>
         </nav>
 
-        <!-- Right Action Buttons -->
-        <div class="flex items-center gap-3">
+        <!-- Right Action Buttons Matching Screenshot -->
+        <div class="flex items-center gap-3 sm:gap-4">
           <!-- Quotation Cart Trigger Button -->
-          <button id="quote-drawer-toggle" class="relative flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 font-semibold text-sm transition">
-            <i class="fa-solid fa-file-invoice-dollar text-base"></i>
+          <button id="quote-drawer-toggle" onclick="openQuotationDrawer()" class="relative flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl bg-orange-50 text-orange-700 hover:bg-orange-100 font-semibold text-xs sm:text-sm transition">
+            <i class="fa-solid fa-file-invoice-dollar text-base text-orange-600"></i>
             <span class="hidden sm:inline">My Quotation</span>
-            <span id="quote-badge-count" class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold">0</span>
+            <span id="quote-badge-count" class="w-5 h-5 rounded-full bg-orange-600 text-white text-[11px] flex items-center justify-center font-bold">0</span>
           </button>
 
           <!-- WhatsApp Quick Contact -->
-          <a id="header-whatsapp-btn" href="#" target="_blank" class="hidden lg:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-sm font-semibold transition" title="Chat on WhatsApp">
+          <a id="header-whatsapp-btn" href="#" target="_blank" class="hidden lg:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-xs sm:text-sm font-semibold transition" title="Chat on WhatsApp">
             <i class="fa-brands fa-whatsapp text-lg text-emerald-600"></i>
             <span>WhatsApp</span>
           </a>
 
-          <!-- Admin Portal Trigger Button -->
-          <button id="open-admin-modal-btn" class="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-slate-200 hover:border-slate-300 text-slate-600 hover:text-slate-900 text-sm font-medium transition" title="Admin Portal Login">
-            <i class="fa-solid fa-lock text-slate-400"></i>
-            <span class="hidden sm:inline" id="admin-btn-label">Admin Login</span>
+          <!-- Login Button (Opens Admin Portal) -->
+          <button id="open-admin-modal-btn" onclick="openAdminModal()" class="font-semibold text-sm text-slate-700 hover:text-orange-600 transition px-2 py-1" title="Admin Portal Login">
+            <span id="admin-btn-label">Login</span>
+          </button>
+
+          <!-- Register / Contractor Access Button -->
+          <button onclick="openRegisterModal()" class="px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs sm:text-sm shadow-sm transition">
+            Register
           </button>
         </div>
       </div>
@@ -119,94 +122,126 @@
   <!-- ======================================================= -->
   <main id="customer-view" class="flex-grow">
 
-    <!-- HERO SECTION -->
-    <section class="relative bg-gradient-to-b from-blue-50/70 via-white to-slate-50 pt-12 pb-16 border-b border-slate-200">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-100/80 text-blue-800 text-xs font-semibold mb-6 shadow-sm">
-          <i class="fa-solid fa-bolt text-blue-600"></i>
-          <span>Instant Real-Time Pricing & Estimates</span>
+    <!-- HERO SECTION MATCHING LOVABLE SCREENSHOT -->
+    <section class="hero-warehouse-bg text-white pt-16 pb-20 sm:pt-24 sm:pb-28 border-b border-slate-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        <!-- Location Pill Badge -->
+        <div class="inline-block px-3.5 py-1.5 rounded-full bg-orange-600 text-white text-xs font-extrabold uppercase tracking-wider mb-6 shadow-md">
+          KALWAN, NASHIK, MAHARASHTRA
         </div>
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight max-w-4xl mx-auto leading-tight">
-          Transparent Pricing, <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Instant Quotations</span> for Your Business
+
+        <!-- Main Headline -->
+        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-tight max-w-4xl">
+          Everything you need to <span class="text-orange-500">build</span>, fix and finish.
         </h1>
-        <p class="mt-5 text-lg text-slate-600 max-w-2xl mx-auto">
-          Choose items from our live catalog, generate an official downloadable quotation in seconds, or submit your requirement directly to our team.
+
+        <!-- Subtitle -->
+        <p class="mt-5 text-base sm:text-xl text-slate-200 max-w-2xl font-normal leading-relaxed">
+          Om Traders supplies hardware, plumbing and building materials. Browse our catalogue and get an instant estimated quotation online.
         </p>
 
-        <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
-          <a href="#catalog-section" class="px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base shadow-lg shadow-blue-500/25 transition">
-            <i class="fa-solid fa-calculator mr-2"></i> Build Your Quotation
-          </a>
-          <a href="#enquiry-section" class="px-6 py-3.5 rounded-xl bg-white border border-slate-300 hover:border-slate-400 text-slate-700 font-semibold text-base hover:bg-slate-50 transition">
-            <i class="fa-solid fa-envelope mr-2"></i> Submit Custom Enquiry
-          </a>
+        <!-- CTAs Matching Screenshot -->
+        <div class="mt-8 flex flex-wrap items-center gap-4">
+          <button onclick="openQuotationDrawer()" class="px-6 py-3.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-base shadow-lg shadow-orange-600/30 transition flex items-center gap-2">
+            <span>Get a quotation</span>
+            <i class="fa-solid fa-arrow-right text-sm"></i>
+          </button>
+          <button onclick="scrollToCatalog()" class="px-6 py-3.5 rounded-xl bg-slate-900/70 hover:bg-slate-900 text-white border border-slate-700 hover:border-slate-500 font-semibold text-base transition backdrop-blur-sm">
+            View products
+          </button>
         </div>
 
-        <!-- Quick Trust Badges -->
-        <div class="mt-12 pt-8 border-t border-slate-200/80 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto text-left">
+        <!-- Quick Highlights -->
+        <div class="mt-12 pt-8 border-t border-slate-800/80 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl text-left">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-lg">
+            <div class="w-10 h-10 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center text-lg">
               <i class="fa-solid fa-file-pdf"></i>
             </div>
             <div>
-              <p class="font-bold text-slate-900 text-sm">Downloadable PDF</p>
-              <p class="text-xs text-slate-500">Official printable quote</p>
+              <p class="font-bold text-white text-sm">Instant PDF Quote</p>
+              <p class="text-xs text-slate-400">Download official estimate</p>
             </div>
           </div>
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-lg">
-              <i class="fa-solid fa-tag"></i>
+            <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg">
+              <i class="fa-solid fa-layer-group"></i>
             </div>
             <div>
-              <p class="font-bold text-slate-900 text-sm">Updated Catalog</p>
-              <p class="text-xs text-slate-500">Real-time Excel synced</p>
+              <p class="font-bold text-white text-sm">Live Stock Rates</p>
+              <p class="text-xs text-slate-400">Excel synced pricing</p>
             </div>
           </div>
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center text-lg">
+            <div class="w-10 h-10 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-lg">
               <i class="fa-brands fa-whatsapp"></i>
             </div>
             <div>
-              <p class="font-bold text-slate-900 text-sm">WhatsApp Ready</p>
-              <p class="text-xs text-slate-500">1-click direct inquiry</p>
+              <p class="font-bold text-white text-sm">WhatsApp Orders</p>
+              <p class="text-xs text-slate-400">1-click direct estimate</p>
             </div>
           </div>
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-lg">
-              <i class="fa-solid fa-headset"></i>
+            <div class="w-10 h-10 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-lg">
+              <i class="fa-solid fa-truck-fast"></i>
             </div>
             <div>
-              <p class="font-bold text-slate-900 text-sm">Quick Response</p>
-              <p class="text-xs text-slate-500">Within 24 business hours</p>
+              <p class="font-bold text-white text-sm">Kalwan & Nashik</p>
+              <p class="text-xs text-slate-400">Prompt site dispatch</p>
             </div>
           </div>
         </div>
+
       </div>
     </section>
 
-    <!-- HOW IT WORKS SECTION -->
-    <section id="how-it-works-section" class="py-12 bg-white border-b border-slate-200">
+    <!-- HOW IT WORKS SECTION (Interactive Clickable Steps) -->
+    <section id="how-it-works-section" class="py-14 bg-white border-b border-slate-200">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-10">
-          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">How It Works</h2>
-          <p class="text-slate-500 text-sm mt-1">Get your quotation in 3 effortless steps</p>
+          <div class="inline-flex items-center gap-1.5 text-orange-600 text-xs font-bold uppercase tracking-wider mb-2">
+            <i class="fa-solid fa-bolt"></i>
+            <span>Simple 3-Step Process</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">How to Get Your Material Quotation</h2>
+          <p class="text-slate-500 text-sm mt-1">Click on any step below to jump directly to that section</p>
         </div>
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 text-center relative">
-            <div class="w-12 h-12 mx-auto rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-lg mb-4 shadow-md">1</div>
-            <h3 class="font-bold text-lg text-slate-800">Select Items & Quantities</h3>
-            <p class="text-slate-600 text-sm mt-2">Browse the updated services or products below and add your required quantities to the quotation.</p>
+          
+          <!-- STEP 1: Select Items & Quantities -->
+          <div onclick="scrollToCatalog()" class="step-card cursor-pointer p-6 rounded-2xl bg-slate-50 border border-slate-200 text-center relative group">
+            <div class="w-12 h-12 mx-auto rounded-full bg-orange-600 text-white font-bold flex items-center justify-center text-lg mb-4 shadow-md group-hover:scale-110 transition-transform">1</div>
+            <h3 class="font-bold text-lg text-slate-900 group-hover:text-orange-600 transition-colors">Select Items & Quantities</h3>
+            <p class="text-slate-600 text-sm mt-2">Browse our construction & plumbing materials below and add required quantities to your estimate.</p>
+            <div class="mt-4 inline-flex items-center gap-1 text-xs font-bold text-orange-600 group-hover:underline">
+              <span>Browse Product List</span>
+              <i class="fa-solid fa-arrow-down text-[10px]"></i>
+            </div>
           </div>
-          <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 text-center relative">
-            <div class="w-12 h-12 mx-auto rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-lg mb-4 shadow-md">2</div>
-            <h3 class="font-bold text-lg text-slate-800">Review & Calculate Quote</h3>
-            <p class="text-slate-600 text-sm mt-2">See automatic subtotal, applicable taxes/GST, and immediate grand total in real-time.</p>
+
+          <!-- STEP 2: Review & Calculate Quote -->
+          <div onclick="openQuotationDrawer()" class="step-card cursor-pointer p-6 rounded-2xl bg-slate-50 border border-slate-200 text-center relative group">
+            <div class="w-12 h-12 mx-auto rounded-full bg-orange-600 text-white font-bold flex items-center justify-center text-lg mb-4 shadow-md group-hover:scale-110 transition-transform">2</div>
+            <h3 class="font-bold text-lg text-slate-900 group-hover:text-orange-600 transition-colors">Review & Calculate Quote</h3>
+            <p class="text-slate-600 text-sm mt-2">Review itemized lines, quantity controls, automatic GST calculation, and instant grand total.</p>
+            <div class="mt-4 inline-flex items-center gap-1 text-xs font-bold text-orange-600 group-hover:underline">
+              <span>Open Quotation Drawer</span>
+              <i class="fa-solid fa-calculator text-[10px]"></i>
+            </div>
           </div>
-          <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 text-center relative">
-            <div class="w-12 h-12 mx-auto rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-lg mb-4 shadow-md">3</div>
-            <h3 class="font-bold text-lg text-slate-800">Download or Submit</h3>
-            <p class="text-slate-600 text-sm mt-2">Download an official PDF quotation, share via WhatsApp, or submit an enquiry to request a callback.</p>
+
+          <!-- STEP 3: Download or Submit -->
+          <div onclick="openDownloadReviewModal()" class="step-card cursor-pointer p-6 rounded-2xl bg-slate-50 border border-slate-200 text-center relative group">
+            <div class="w-12 h-12 mx-auto rounded-full bg-orange-600 text-white font-bold flex items-center justify-center text-lg mb-4 shadow-md group-hover:scale-110 transition-transform">3</div>
+            <h3 class="font-bold text-lg text-slate-900 group-hover:text-orange-600 transition-colors">Download or Submit</h3>
+            <p class="text-slate-600 text-sm mt-2">Download official printable PDF quotation, share directly via WhatsApp, or submit for site delivery.</p>
+            <div class="mt-4 inline-flex items-center gap-1 text-xs font-bold text-orange-600 group-hover:underline">
+              <span>Download & Submit</span>
+              <i class="fa-solid fa-file-pdf text-[10px]"></i>
+            </div>
           </div>
+
         </div>
       </div>
     </section>
@@ -217,28 +252,28 @@
       <!-- Catalog Header & Controls -->
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
         <div>
-          <div class="inline-flex items-center gap-1.5 text-blue-600 text-xs font-bold uppercase tracking-wider mb-2">
+          <div class="inline-flex items-center gap-1.5 text-orange-600 text-xs font-bold uppercase tracking-wider mb-2">
             <i class="fa-solid fa-list-check"></i>
-            <span>Interactive Catalog</span>
+            <span>Live Stock Rates</span>
           </div>
-          <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Services & Product Rate List</h2>
-          <p class="text-slate-600 text-sm mt-1">Select items below to automatically construct your quotation.</p>
+          <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Building & Plumbing Materials Rate List</h2>
+          <p class="text-slate-600 text-sm mt-1">Select materials and quantities below to instantly calculate your project estimate.</p>
         </div>
 
         <!-- Search and Category Filters -->
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <div class="relative min-w-[260px]">
+          <div class="relative min-w-[280px]">
             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-            <input type="text" id="catalog-search" placeholder="Search services or products..." 
-              class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-white shadow-sm">
+            <input type="text" id="catalog-search" placeholder="Search cement, steel, pipes, taps..." 
+              class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm bg-white shadow-sm">
           </div>
         </div>
       </div>
 
       <!-- Category Filter Pills -->
       <div id="category-pills" class="flex items-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none">
-        <button class="category-btn active px-4 py-2 rounded-xl text-sm font-semibold bg-blue-600 text-white shadow-sm transition" data-category="ALL">
-          All Items (<span id="total-catalog-count">0</span>)
+        <button class="category-btn active px-4 py-2 rounded-xl text-sm font-semibold bg-orange-600 text-white shadow-sm transition" data-category="ALL">
+          All Materials (<span id="total-catalog-count">0</span>)
         </button>
         <!-- Dynamic categories injected here -->
       </div>
@@ -266,10 +301,10 @@
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-200 overflow-hidden">
           
-          <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-white">
-            <span class="inline-block px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wider mb-2">Direct Enquiry & Proposal</span>
-            <h2 class="text-2xl sm:text-3xl font-extrabold">Send an Enquiry to Our Team</h2>
-            <p class="text-blue-100 text-sm mt-1">Have questions or need a customized business proposal? Fill out the form below and we will get back to you promptly.</p>
+          <div class="bg-gradient-to-r from-blue-700 to-indigo-800 p-8 text-white">
+            <span class="inline-block px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wider mb-2">Direct Enquiry & Site Estimate</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold">Request Material Quotation & Delivery</h2>
+            <p class="text-blue-100 text-sm mt-1">Contractors, plumbers, and builders: submit your required materials list below for wholesale rates and vehicle dispatch estimates.</p>
           </div>
 
           <!-- Dynamic Quotation Preview Inside Enquiry Form -->
@@ -296,7 +331,7 @@
                 <label for="enquiry-name" class="block text-sm font-semibold text-slate-700 mb-2">Full Name <span class="text-red-500">*</span></label>
                 <div class="relative">
                   <i class="fa-solid fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                  <input type="text" id="enquiry-name" required placeholder="John Doe" 
+                  <input type="text" id="enquiry-name" required placeholder="Ramesh Kumar / Site Supervisor" 
                     class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
                 </div>
               </div>
@@ -306,7 +341,7 @@
                 <label for="enquiry-email" class="block text-sm font-semibold text-slate-700 mb-2">Email Address <span class="text-red-500">*</span></label>
                 <div class="relative">
                   <i class="fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                  <input type="email" id="enquiry-email" required placeholder="john@company.com" 
+                  <input type="email" id="enquiry-email" required placeholder="ramesh.builders@gmail.com" 
                     class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
                 </div>
               </div>
@@ -316,17 +351,17 @@
                 <label for="enquiry-phone" class="block text-sm font-semibold text-slate-700 mb-2">Phone / WhatsApp Number <span class="text-red-500">*</span></label>
                 <div class="relative">
                   <i class="fa-solid fa-phone absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                  <input type="tel" id="enquiry-phone" required placeholder="+1 (555) 000-0000" 
+                  <input type="tel" id="enquiry-phone" required placeholder="+91 98765 43210" 
                     class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
                 </div>
               </div>
 
               <!-- Company / Organization -->
               <div>
-                <label for="enquiry-company" class="block text-sm font-semibold text-slate-700 mb-2">Company / Organization</label>
+                <label for="enquiry-company" class="block text-sm font-semibold text-slate-700 mb-2">Firm / Site Name</label>
                 <div class="relative">
                   <i class="fa-solid fa-building absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                  <input type="text" id="enquiry-company" placeholder="Acme Corp (Optional)" 
+                  <input type="text" id="enquiry-company" placeholder="Ramesh Construction / Project Site (Optional)" 
                     class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
                 </div>
               </div>
@@ -335,8 +370,8 @@
 
             <!-- Message / Requirements -->
             <div>
-              <label for="enquiry-message" class="block text-sm font-semibold text-slate-700 mb-2">Project Requirements or Special Notes</label>
-              <textarea id="enquiry-message" rows="3" placeholder="Tell us about your timeline, customized specifications, or any questions..." 
+              <label for="enquiry-message" class="block text-sm font-semibold text-slate-700 mb-2">Delivery Site Address & Specific Requirements</label>
+              <textarea id="enquiry-message" rows="3" placeholder="Provide site location, required unloading date, vehicle access details, or brand preferences..." 
                 class="w-full p-4 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"></textarea>
             </div>
 
@@ -362,26 +397,26 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div class="space-y-3">
-            <h4 class="font-bold text-slate-900 text-base" id="footer-brand-name">Apex Business Solutions</h4>
-            <p class="text-slate-500 text-sm" id="footer-tagline">Providing end-to-end professional services, equipment, and consulting with instant quotation generation.</p>
+            <h4 class="font-bold text-slate-900 text-base" id="footer-brand-name">Om Traders</h4>
+            <p class="text-slate-500 text-sm" id="footer-tagline">Building and Plumbing Material Supplier - Complete wholesale & retail solutions for cement, TMT steel, CPVC/PVC plumbing, sanitaryware, and construction chemicals.</p>
           </div>
           <div class="space-y-2">
-            <h4 class="font-bold text-slate-900 text-base">Direct Contact</h4>
+            <h4 class="font-bold text-slate-900 text-base">Shop & Site Contact</h4>
             <p class="text-slate-600 text-sm flex items-center gap-2">
-              <i class="fa-solid fa-phone text-blue-600 w-4"></i> <span id="footer-phone">+1 (800) 555-0199</span>
+              <i class="fa-solid fa-phone text-blue-600 w-4"></i> <span id="footer-phone">+91 98765 43210</span>
             </p>
             <p class="text-slate-600 text-sm flex items-center gap-2">
-              <i class="fa-solid fa-envelope text-blue-600 w-4"></i> <span id="footer-email">contact@apexsolutions.com</span>
+              <i class="fa-solid fa-envelope text-blue-600 w-4"></i> <span id="footer-email">omtraders.materials@gmail.com</span>
             </p>
             <p class="text-slate-600 text-sm flex items-center gap-2">
-              <i class="fa-solid fa-location-dot text-blue-600 w-4"></i> <span id="footer-address">Suite 400, Financial District, New York, NY</span>
+              <i class="fa-solid fa-location-dot text-blue-600 w-4"></i> <span id="footer-address">Main Market, Opp. Transport Nagar, Industrial Area</span>
             </p>
           </div>
           <div class="space-y-3">
             <h4 class="font-bold text-slate-900 text-base">Quick Actions</h4>
             <div class="flex flex-col gap-2">
               <button onclick="openQuotationDrawer()" class="text-left text-sm text-blue-600 hover:underline">
-                <i class="fa-solid fa-file-invoice mr-1.5"></i> Open Current Quotation
+                <i class="fa-solid fa-file-invoice mr-1.5"></i> Open Current Material Estimate
               </button>
               <button onclick="openAdminModal()" class="text-left text-sm text-slate-500 hover:text-slate-800">
                 <i class="fa-solid fa-lock mr-1.5"></i> Admin Management Portal
@@ -390,8 +425,8 @@
           </div>
         </div>
         <div class="mt-8 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
-          <p>© <span id="current-year">2026</span> <span id="footer-copy-brand">Apex Business Solutions</span>. All rights reserved.</p>
-          <p>Hosted smoothly on GitHub Pages • Zero Backend Setup</p>
+          <p>© <span id="current-year">2026</span> <span id="footer-copy-brand">Om Traders</span>. All rights reserved.</p>
+          <p>Building and Plumbing Material Supplier • Published on GitHub Pages</p>
         </div>
       </div>
     </section>
@@ -807,13 +842,23 @@
           <!-- Injected via JavaScript -->
         </div>
 
-        <!-- Empty Cart Notice -->
+        <!-- Empty Cart Notice with Quick Actions -->
         <div id="drawer-empty-notice" class="hidden flex-1 flex flex-col items-center justify-center p-8 text-center">
-          <div class="w-16 h-16 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center text-2xl mb-3">
+          <div class="w-16 h-16 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center text-2xl mb-3">
             <i class="fa-solid fa-cart-shopping"></i>
           </div>
-          <h4 class="font-bold text-slate-800 text-base">Your Quotation is Empty</h4>
-          <p class="text-slate-500 text-xs mt-1 max-w-xs">Browse the catalog above and click "Add to Quote" to begin constructing your customized estimate.</p>
+          <h4 class="font-bold text-slate-800 text-base">Your Material Estimate is Empty</h4>
+          <p class="text-slate-500 text-xs mt-1 max-w-xs">Browse the building & plumbing catalog and select materials to begin calculating your estimate.</p>
+          <div class="mt-5 flex flex-col gap-2 w-full max-w-xs">
+            <button onclick="closeQuotationDrawer(); scrollToCatalog();" class="w-full py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs shadow-sm transition flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-list-check"></i>
+              <span>Browse Materials List</span>
+            </button>
+            <button onclick="addSampleMaterialsToQuote()" class="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-wand-magic-sparkles text-orange-600"></i>
+              <span>Quick Add Sample Quotation</span>
+            </button>
+          </div>
         </div>
 
         <!-- Drawer Calculations & Actions Footer -->
@@ -830,7 +875,7 @@
             </div>
             <div class="flex justify-between text-base font-bold text-slate-900 pt-2 border-t border-slate-200">
               <span>Grand Total</span>
-              <span id="drawer-grand-total" class="text-blue-600">$0.00</span>
+              <span id="drawer-grand-total" class="text-orange-600">₹0.00</span>
             </div>
           </div>
 
@@ -846,8 +891,8 @@
             </button>
 
             <!-- Proceed to Submit Enquiry -->
-            <button onclick="proceedToEnquiryFromQuote()" class="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm">
-              <i class="fa-solid fa-paper-plane"></i> Proceed with this Quote
+            <button onclick="proceedToEnquiryFromQuote()" class="w-full py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm">
+              <i class="fa-solid fa-paper-plane"></i> Proceed with this Estimate
             </button>
           </div>
 
@@ -1050,10 +1095,10 @@
     <div style="border-bottom: 2px solid #2563eb; padding-bottom: 16px; margin-bottom: 24px;">
       <div style="display: flex; justify-content: space-between; align-items: flex-start;">
         <div>
-          <h1 id="print-business-name" style="font-size: 24px; font-weight: 800; color: #1e3a8a; margin: 0;">Apex Business Solutions</h1>
-          <p id="print-tagline" style="font-size: 12px; color: #6b7280; margin: 4px 0 0 0;">Instant Quotation & Client Services</p>
-          <p id="print-address" style="font-size: 11px; color: #4b5563; margin: 4px 0 0 0;">Suite 400, Financial District, New York, NY</p>
-          <p id="print-contact" style="font-size: 11px; color: #4b5563; margin: 2px 0 0 0;">Phone: +1 (800) 555-0199 | Email: contact@apexsolutions.com</p>
+          <h1 id="print-business-name" style="font-size: 24px; font-weight: 800; color: #1e3a8a; margin: 0;">Om Traders</h1>
+          <p id="print-tagline" style="font-size: 12px; color: #6b7280; margin: 4px 0 0 0;">Building and Plumbing Material Supplier</p>
+          <p id="print-address" style="font-size: 11px; color: #4b5563; margin: 4px 0 0 0;">Main Market, Opp. Transport Nagar, Industrial Area</p>
+          <p id="print-contact" style="font-size: 11px; color: #4b5563; margin: 2px 0 0 0;">Phone: +91 98765 43210 | Email: omtraders.materials@gmail.com</p>
         </div>
         <div style="text-align: right;">
           <h2 style="font-size: 20px; font-weight: 800; color: #2563eb; margin: 0; text-transform: uppercase;">Official Quotation</h2>
