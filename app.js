@@ -235,7 +235,7 @@ function loadStoredData() {
   }
 
   // Load custom password if saved
-  const savedPassword = localStorage.getItem(STORAGE_KEYS.PASSWORD);
+  const savedPassword = getActiveAdminPassword();
   if (savedPassword) {
     AppState.settings.adminPassword = savedPassword;
   }
@@ -268,6 +268,41 @@ function saveData(key, data) {
   } catch (e) {
     console.error('Storage write error:', e);
   }
+}
+
+// Password Management Helpers
+function getActiveAdminPassword() {
+  let pwd = localStorage.getItem(STORAGE_KEYS.PASSWORD);
+  if (pwd) {
+    try {
+      if (typeof pwd === 'string' && pwd.startsWith('"') && pwd.endsWith('"')) {
+        pwd = JSON.parse(pwd);
+      }
+    } catch (e) {}
+  }
+  if (!pwd && AppState.settings && AppState.settings.adminPassword) {
+    pwd = AppState.settings.adminPassword;
+  }
+  return (pwd || '').trim();
+}
+
+function setActiveAdminPassword(newPass) {
+  const cleanPass = newPass.trim();
+  AppState.settings.adminPassword = cleanPass;
+  localStorage.setItem(STORAGE_KEYS.PASSWORD, cleanPass);
+  localStorage.setItem('om_traders_custom_password_active', 'true');
+  saveData(STORAGE_KEYS.SETTINGS, AppState.settings);
+}
+
+function isCustomPasswordSet() {
+  if (localStorage.getItem('om_traders_custom_password_active') === 'true') {
+    return true;
+  }
+  const active = getActiveAdminPassword();
+  if (active && !GLOBAL_ADMIN_PASSWORDS.some(p => p.toLowerCase() === active.toLowerCase())) {
+    return true;
+  }
+  return false;
 }
 
 // ==============================================================================
@@ -883,12 +918,24 @@ function togglePasswordVisibility() {
   }
 }
 
-// 1-Click quick autofill for default admin password
+// 1-Click quick autofill for default admin password (only before custom password is set)
 function quickFillDefaultPassword() {
-  quickFillPassword('Amit@OmTraders');
+  if (isCustomPasswordSet()) {
+    showToast('Default master passwords have been disabled because a custom password was set.', 'error');
+    const input = document.getElementById('admin-password-input');
+    if (input) input.focus();
+  } else {
+    quickFillPassword('Amit@OmTraders');
+  }
 }
 
 function quickFillPassword(pwd = 'Amit@OmTraders') {
+  if (isCustomPasswordSet()) {
+    showToast('Default master passwords have been disabled because a custom password was set.', 'error');
+    const input = document.getElementById('admin-password-input');
+    if (input) input.focus();
+    return;
+  }
   const input = document.getElementById('admin-password-input');
   if (input) {
     input.value = pwd;
@@ -906,17 +953,21 @@ function handleAdminLogin(e) {
     return;
   }
 
-  // Master list of accepted passwords (case-insensitive and trimmed)
-  const validPasswords = [
-    ...GLOBAL_ADMIN_PASSWORDS,
-    (AppState.settings.adminPassword || '').trim(),
-    (localStorage.getItem(STORAGE_KEYS.PASSWORD) || '').trim()
-  ].filter(Boolean);
+  const activePassword = getActiveAdminPassword();
+  const customIsActive = isCustomPasswordSet();
 
-  // Check if entered password matches any valid password (exact or case-insensitive)
-  const isMatch = validPasswords.some(valid => {
-    return valid === enteredPass || valid.toLowerCase() === enteredPass.toLowerCase();
-  });
+  // STRICT ACCESS CONTROL:
+  // Once a custom password has been set or reset by the admin:
+  // ALL initial master passwords (Amit@OmTraders, admin123, omtraders, etc.) are COMPLETELY DISABLED!
+  // ONLY the new custom password will work.
+  let isMatch = false;
+  if (customIsActive && activePassword) {
+    isMatch = (enteredPass.toLowerCase() === activePassword.toLowerCase());
+  } else {
+    // Initial setup state (before any custom password is set)
+    const defaultList = [...GLOBAL_ADMIN_PASSWORDS, activePassword].filter(Boolean);
+    isMatch = defaultList.some(p => p.toLowerCase() === enteredPass.toLowerCase());
+  }
 
   if (isMatch) {
     AppState.isAdmin = true;
@@ -933,7 +984,11 @@ function handleAdminLogin(e) {
     showAdminDashboard();
     showToast('🎉 Admin authenticated successfully! Welcome.', 'success');
   } else {
-    showToast('Incorrect password. Use "Amit@OmTraders" or "admin123"', 'error');
+    if (customIsActive) {
+      showToast('❌ Access Denied: Incorrect password. Master password is now disabled because you set a custom password. Use your new password or click "Forgot Password?".', 'error');
+    } else {
+      showToast('Incorrect password. Default: "Amit@OmTraders" (or click "Forgot Password?").', 'error');
+    }
   }
 }
 
@@ -955,9 +1010,8 @@ async function updateAdminPassword() {
     return;
   }
 
-  AppState.settings.adminPassword = newPass;
-  saveData(STORAGE_KEYS.SETTINGS, AppState.settings);
-  saveData(STORAGE_KEYS.PASSWORD, newPass);
+  // Set custom password & permanently deactivate master passwords
+  setActiveAdminPassword(newPass);
   if (input) input.value = '';
 
   // Cloud sync for cross-device access
@@ -966,7 +1020,7 @@ async function updateAdminPassword() {
   // Dispatch email notification to Amit.omtraders@gmail.com
   sendPasswordChangeNotificationEmail(newPass);
 
-  showToast(`🎉 Admin password updated to "${newPass}"! Notification sent to ${ADMIN_CONFIG.RECOVERY_EMAIL}`, 'success');
+  showToast(`🎉 Password updated to "${newPass}"! Master passwords are now completely disabled for security. Notification sent to ${ADMIN_CONFIG.RECOVERY_EMAIL}`, 'success');
 }
 
 // ==============================================================================
@@ -1135,10 +1189,8 @@ async function confirmResetPasswordWithOtp() {
     return;
   }
 
-  // Update password in settings and local storage
-  AppState.settings.adminPassword = newPass;
-  saveData(STORAGE_KEYS.SETTINGS, AppState.settings);
-  saveData(STORAGE_KEYS.PASSWORD, newPass);
+  // Update password in settings and local storage (disables master passwords)
+  setActiveAdminPassword(newPass);
 
   // Sync to cloud
   syncPasswordToCloud(newPass);
@@ -1204,8 +1256,7 @@ async function fetchPasswordFromCloud() {
     if (res.ok) {
       const cloudPwd = (await res.text()).trim();
       if (cloudPwd && cloudPwd.length >= 3 && cloudPwd.length <= 50) {
-        AppState.settings.adminPassword = cloudPwd;
-        localStorage.setItem(STORAGE_KEYS.PASSWORD, cloudPwd);
+        setActiveAdminPassword(cloudPwd);
       }
     }
   } catch (err) {
