@@ -62,7 +62,7 @@ https://<your-github-username>.github.io/<repository-name>/
 ---
 
 ### 🛡️ Admin Portal (Upload Excel & Download Enquiries)
-- **Access**: Click **"Login"** in the top right header (Default password: **`admin123`**).
+- **Access**: Click **"Login"** in the top right header (Default password: **`Amit@OmTraders`** or **`admin123`**).
 - **Smart Excel Rate List Uploader**:
   - Drag & drop any `.xlsx`, `.xls`, or `.csv` spreadsheet.
   - **Smart Header Detection**: Detects header rows even if your Excel file has titles on Row 1 or 2.
@@ -78,28 +78,51 @@ https://<your-github-username>.github.io/<repository-name>/
 
 ```text
 business-quotation-website/
-├── index.html                 # Complete Single-Page Application (Customer & Admin views)
-├── app.js                     # Core logic: SheetJS Excel parser, Quotation engine, Lead capture
+├── index.html                 # Complete Single-Page Application (Customer, Admin & Recovery views)
+├── app.js                     # SheetJS Excel parser, Quotation engine, Lead capture & Multi-device auth
 ├── styles.css                 # Custom styling, warehouse hero, and print invoice layout
 ├── sample-catalog.csv         # Ready-to-test Building & Plumbing materials rate list
-└── README.md                  # Complete deployment and usage instructions
+└── README.md                  # Complete deployment, password recovery, and usage instructions
 ```
 
 ---
 
 ## ⚡ Quick Start (Local Testing)
 
-1. Open the folder [`business-quotation-website`](file:///c:/Users/malpu/OneDrive/Documents/Antigravity/business-quotation-website) on your computer.
+1. Open the folder [`business-quotation-website`](file:///c:/Users/malpu/OneDrive\Documents\Antigravity\business-quotation-website) on your computer.
 2. Double-click **`index.html`** to open it in Chrome or Edge.
 3. Everything works immediately without any installation!
    - Click **"View products"** or **"Select Items & Quantities"** to browse materials.
    - Click **"Get a quotation"** or **"Review & Calculate Quote"** to view calculations.
-   - Click **"Login"** (password: `admin123`) to upload Excel files or download leads!
+   - Click **"Login"** (password: `Amit@OmTraders` or `admin123`) to upload Excel files or download leads!
 
 ---
 
-## 🔐 Admin Credentials & Settings
+## 🔐 Admin Credentials, Multi-Device Sync & Email Recovery
 
-- **Default Admin Password**: `admin123`
-- You can change the password and customize shop contact numbers in the **Business Settings** tab in the Admin Portal.
-- All uploaded data, customer enquiries, and settings are saved in the browser's persistent local storage (`localStorage`).
+### 1. Universal Admin Master Passwords (Works for ALL Devices)
+Any of the following master passwords can be used on any phone, laptop, or desktop across the world:
+* **`Amit@OmTraders`** *(Primary Default)*
+* **`admin123`**
+* **`omtraders`**
+* **`Amit@123`**
+* **`omtraders123`**
+
+### 2. Multi-Device Password Reset
+- An administrator can reset or update the admin passcode from **any device** at any time.
+- Simply log in, go to **Admin Dashboard -> Business Settings -> Change Admin Passcode**, enter your new password, and click **"Update & Sync"**.
+- This updates the local device storage, syncs with the remote cloud key-value store, and automatically dispatches a notification email to **`Amit.omtraders@gmail.com`**.
+
+### 3. Forgot Password / Email Recovery System
+If an administrator forgets the password or accesses the website from a brand new device:
+1. Click **"Login"** in the top navigation bar.
+2. Click **"Forgot Password?"**.
+3. Click **"Send Password to Amit.omtraders@gmail.com"**.
+4. An automated email is immediately dispatched to **`Amit.omtraders@gmail.com`** containing:
+   - Current active password
+   - Universal master backup password (`Amit@OmTraders`)
+   - A unique 6-digit verification security OTP
+5. You can log in directly with the received password or enter the 6-digit verification code (or master emergency PIN: **`Amit789`**) directly on the recovery screen to set a new password on that device!
+
+### 4. Direct Email Client Fallback
+- A direct **"Open Gmail / Email App Directly"** (`mailto:Amit.omtraders@gmail.com`) option is also provided so the administrator can trigger an email recovery instantly with one tap from any mobile browser or desktop mail client.

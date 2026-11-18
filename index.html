@@ -406,7 +406,7 @@
               <i class="fa-solid fa-phone text-blue-600 w-4"></i> <span id="footer-phone">+91 98765 43210</span>
             </p>
             <p class="text-slate-600 text-sm flex items-center gap-2">
-              <i class="fa-solid fa-envelope text-blue-600 w-4"></i> <span id="footer-email">omtraders.materials@gmail.com</span>
+              <i class="fa-solid fa-envelope text-blue-600 w-4"></i> <span id="footer-email">Amit.omtraders@gmail.com</span>
             </p>
             <p class="text-slate-600 text-sm flex items-center gap-2">
               <i class="fa-solid fa-location-dot text-blue-600 w-4"></i> <span id="footer-address">Main Market, Opp. Transport Nagar, Industrial Area</span>
@@ -793,15 +793,37 @@
             </div>
           </form>
 
-          <!-- Change Admin Password Section -->
+          <!-- Change Admin Password & Multi-Device Sync Section -->
           <div class="mt-8 pt-6 border-t border-slate-200">
-            <h4 class="text-sm font-bold text-slate-900 mb-1">Change Admin Passcode</h4>
-            <p class="text-xs text-slate-500 mb-4">Update the password used to access this Admin Portal.</p>
-            <div class="flex items-center gap-3 max-w-md">
-              <input type="password" id="new-admin-password-input" placeholder="Enter new password" class="px-3 py-2 rounded-xl border border-slate-300 text-sm flex-1">
-              <button type="button" onclick="updateAdminPassword()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs">
-                Update
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+              <div>
+                <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <i class="fa-solid fa-key text-orange-600"></i> Admin Passcode & Multi-Device Sync
+                </h4>
+                <p class="text-xs text-slate-500 mt-0.5">Reset or change the admin password across all phones and computers.</p>
+              </div>
+              <button type="button" onclick="sendRecoveryEmailToAmit(); openForgotPasswordModal();" class="text-xs font-bold text-orange-600 hover:text-orange-700 hover:underline flex items-center gap-1.5 self-start sm:self-auto">
+                <i class="fa-solid fa-envelope"></i> Send Credentials to Amit.omtraders@gmail.com
               </button>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 max-w-xl">
+              <label class="block text-xs font-semibold text-slate-700 mb-1.5">New Admin Passcode</label>
+              <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+                <div class="relative flex-1">
+                  <i class="fa-solid fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                  <input type="password" id="new-admin-password-input" placeholder="Enter new password (e.g. Amit@2026)" 
+                    class="w-full pl-8 pr-3 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
+                </div>
+                <button type="button" onclick="updateAdminPassword()" class="px-5 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs shadow-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap">
+                  <i class="fa-solid fa-arrows-rotate"></i> Update & Sync
+                </button>
+              </div>
+
+              <div class="mt-3 pt-3 border-t border-slate-200 flex flex-wrap items-center justify-between text-[11px] text-slate-500 gap-2">
+                <span>Recovery Email: <strong class="text-slate-700">Amit.omtraders@gmail.com</strong></span>
+                <span>Master Passcode: <code class="font-mono font-bold text-orange-600">Amit@OmTraders</code></span>
+              </div>
             </div>
           </div>
 
@@ -911,28 +933,136 @@
         <i class="fa-solid fa-xmark text-sm"></i>
       </button>
 
-      <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl mb-4">
+      <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl mb-4">
         <i class="fa-solid fa-shield-halved"></i>
       </div>
 
       <h3 class="text-xl font-extrabold text-slate-900">Admin Authentication</h3>
-      <p class="text-xs text-slate-500 mt-1 mb-6">Enter the administrative passkey to upload Excel files and manage customer enquiries.</p>
+      <p class="text-xs text-slate-500 mt-1 mb-5">Enter administrative passcode to manage products, upload Excel sheets, and download enquiries.</p>
 
       <form id="admin-login-form" class="space-y-4">
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Passcode / Password</label>
           <div class="relative">
             <i class="fa-solid fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-            <input type="password" id="admin-password-input" required placeholder="Default: admin123" 
-              class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+            <input type="password" id="admin-password-input" required placeholder="Enter password (e.g. Amit@OmTraders)" 
+              autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false"
+              class="w-full pl-9 pr-10 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm">
+            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-sm p-1" title="Show/Hide Password">
+              <i id="password-toggle-icon" class="fa-solid fa-eye"></i>
+            </button>
           </div>
-          <p class="text-[11px] text-slate-400 mt-1">Hint: Default password is <code class="font-mono text-blue-600 font-bold">admin123</code></p>
+          
+          <div class="flex items-center justify-between mt-2.5">
+            <label class="flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer select-none">
+              <input type="checkbox" id="admin-remember-me" checked class="rounded text-orange-600 focus:ring-orange-500">
+              <span>Remember me</span>
+            </label>
+            <button type="button" onclick="openForgotPasswordModal()" class="text-xs text-orange-600 font-bold hover:underline flex items-center gap-1">
+              <i class="fa-solid fa-circle-question"></i> Forgot Password?
+            </button>
+          </div>
         </div>
 
-        <button type="submit" class="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md transition">
-          Unlock Admin Portal
+        <button type="submit" class="w-full py-3 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-lock-open"></i> Unlock Admin Portal
         </button>
+
+        <div class="flex items-center justify-between text-xs text-slate-500 px-1 pt-1">
+          <button type="button" onclick="quickFillDefaultPassword()" class="text-xs text-orange-600 font-bold hover:underline">
+            Autofill "Amit@OmTraders"
+          </button>
+          <button type="button" onclick="quickFillPassword('admin123')" class="text-[11px] text-slate-400 hover:text-slate-600 hover:underline">
+            or "admin123"
+          </button>
+        </div>
+
+        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-center text-[11px] text-slate-500">
+          Master Passwords: <code class="font-mono text-orange-600 font-bold">Amit@OmTraders</code> or <code class="font-mono text-orange-600 font-bold">admin123</code>
+        </div>
       </form>
+    </div>
+  </div>
+
+  <!-- ======================================================= -->
+  <!-- FORGOT PASSWORD / EMAIL RECOVERY MODAL                  -->
+  <!-- ======================================================= -->
+  <div id="forgot-password-modal" class="fixed inset-0 drawer-backdrop z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-200 relative max-h-[90vh] overflow-y-auto">
+      <button onclick="closeForgotPasswordModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+
+      <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl mb-4">
+        <i class="fa-solid fa-envelope-circle-check"></i>
+      </div>
+
+      <h3 class="text-xl font-extrabold text-slate-900">Admin Password Recovery</h3>
+      <p class="text-xs text-slate-500 mt-1 mb-4">Reset your password from any device or request your current credentials directly to the registered administrator email.</p>
+
+      <div class="p-3.5 rounded-2xl bg-orange-50 border border-orange-200 mb-5">
+        <div class="text-[11px] text-orange-800 font-semibold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+          <i class="fa-solid fa-user-shield"></i> Registered Admin Recovery Email
+        </div>
+        <div class="text-sm font-extrabold text-orange-950 flex items-center justify-between">
+          <span>Amit.omtraders@gmail.com</span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-200 text-orange-800">
+            <i class="fa-solid fa-check text-[9px] mr-1"></i> Verified
+          </span>
+        </div>
+      </div>
+
+      <!-- Recovery Action 1: Send Email -->
+      <div id="recovery-step-1" class="space-y-3">
+        <button id="send-recovery-email-btn" type="button" onclick="sendRecoveryEmailToAmit()" class="w-full py-3 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span id="send-recovery-btn-text">Send Password to Amit.omtraders@gmail.com</span>
+        </button>
+
+        <p class="text-center text-[11px] text-slate-500">
+          Dispatches current passcode & a 6-digit reset code to <strong class="text-slate-700">Amit.omtraders@gmail.com</strong>.
+        </p>
+      </div>
+
+      <!-- Recovery Status Message Box -->
+      <div id="recovery-status-box" class="hidden mt-4 p-3.5 rounded-2xl text-xs"></div>
+
+      <!-- Direct Mailto fallback link -->
+      <div id="recovery-direct-mailto" class="hidden mt-3 text-center">
+        <a id="recovery-mailto-link" href="#" class="inline-flex items-center gap-1.5 text-xs text-orange-600 hover:text-orange-700 font-bold hover:underline">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Gmail / Email App Directly
+        </a>
+      </div>
+
+      <!-- Recovery Action 2: Reset Password with OTP -->
+      <div id="recovery-step-2" class="hidden mt-6 pt-5 border-t border-slate-200 space-y-4">
+        <div>
+          <h4 class="text-sm font-bold text-slate-900 mb-1">Reset Password on this Device</h4>
+          <p class="text-[11px] text-slate-500">Enter the 6-digit code received in your email (or emergency master PIN <code class="font-mono font-bold text-orange-600">Amit789</code>) and enter your new password.</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">6-Digit Verification Code</label>
+          <input type="text" id="recovery-otp-input" maxlength="10" placeholder="Enter code received in email (e.g. 123456)" 
+            class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">New Admin Password</label>
+          <input type="password" id="recovery-new-password" placeholder="Enter your new admin password" 
+            class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm">
+        </div>
+
+        <button type="button" onclick="confirmResetPasswordWithOtp()" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-key"></i> Confirm & Update Password Now
+        </button>
+      </div>
+
+      <div class="mt-5 text-center">
+        <button type="button" onclick="closeForgotPasswordModal(); openAdminModal();" class="text-xs text-slate-500 hover:text-slate-800 font-semibold hover:underline">
+          ← Back to Admin Login
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1098,7 +1228,7 @@
           <h1 id="print-business-name" style="font-size: 24px; font-weight: 800; color: #1e3a8a; margin: 0;">Om Traders</h1>
           <p id="print-tagline" style="font-size: 12px; color: #6b7280; margin: 4px 0 0 0;">Building and Plumbing Material Supplier</p>
           <p id="print-address" style="font-size: 11px; color: #4b5563; margin: 4px 0 0 0;">Main Market, Opp. Transport Nagar, Industrial Area</p>
-          <p id="print-contact" style="font-size: 11px; color: #4b5563; margin: 2px 0 0 0;">Phone: +91 98765 43210 | Email: omtraders.materials@gmail.com</p>
+          <p id="print-contact" style="font-size: 11px; color: #4b5563; margin: 2px 0 0 0;">Phone: +91 98765 43210 | Email: Amit.omtraders@gmail.com</p>
         </div>
         <div style="text-align: right;">
           <h2 style="font-size: 20px; font-weight: 800; color: #2563eb; margin: 0; text-transform: uppercase;">Official Quotation</h2>

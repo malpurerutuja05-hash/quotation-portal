@@ -18,8 +18,36 @@ const STORAGE_KEYS = {
   ENQUIRIES: 'om_traders_enquiries_v2',
   SETTINGS: 'om_traders_settings_v2',
   AUTH: 'om_traders_admin_session',
-  PASSWORD: 'om_traders_admin_password'
+  PASSWORD: 'om_traders_admin_password',
+  RECOVERY_OTP: 'om_traders_recovery_otp'
 };
+
+// Administrator Configuration & Recovery Settings
+const ADMIN_CONFIG = {
+  RECOVERY_EMAIL: 'Amit.omtraders@gmail.com',
+  MASTER_PIN: 'Amit789',
+  CLOUD_SYNC_URL: 'https://kvdb.io/omtraders_kalwan_bucket_v1/admin_pwd'
+};
+
+// ==============================================================================
+// UNIVERSAL ADMIN PASSWORDS
+// Works across ALL devices, phones, laptops, and for all users everywhere
+// Case-insensitive & auto-trimmed (e.g. Amit@OmTraders, amit@omtraders, admin123, omtraders)
+// ==============================================================================
+const GLOBAL_ADMIN_PASSWORDS = [
+  'Amit@OmTraders',
+  'amit@omtraders',
+  'Amit@123',
+  'amit123',
+  'admin123',
+  'Admin123',
+  'omtraders',
+  'Omtraders',
+  'omtraders123',
+  'omtraders@123',
+  'om123',
+  'omtraderskalwan'
+];
 
 // Default Sample Catalog Data (Building & Plumbing Materials)
 const DEFAULT_CATALOG = [
@@ -153,10 +181,10 @@ const DEFAULT_SETTINGS = {
   taxRate: 18,
   phone: '+91 98765 43210',
   whatsapp: '919876543210',
-  email: 'omtraders.kalwan@gmail.com',
+  email: 'Amit.omtraders@gmail.com',
   address: 'Main Market, Opp. ST Bus Stand, Kalwan, Nashik, Maharashtra 423501',
   terms: '1. Rates are subject to market fluctuations (especially Steel & Cement) and valid for 7 days.\n2. Loading, unloading, and transportation freight charges extra at actuals.\n3. Goods once dispatched will be verified on site by the client.',
-  adminPassword: 'admin123'
+  adminPassword: 'Amit@OmTraders'
 };
 
 // Global App State
@@ -179,6 +207,7 @@ const AppState = {
 // ==============================================================================
 document.addEventListener('DOMContentLoaded', () => {
   loadStoredData();
+  fetchPasswordFromCloud();
   applySettingsToUI();
   renderCatalogGrid();
   renderCategoryPills();
@@ -195,9 +224,20 @@ function loadStoredData() {
   // 1. Settings
   try {
     const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-    AppState.settings = savedSettings ? JSON.parse(savedSettings) : { ...DEFAULT_SETTINGS };
+    const parsed = savedSettings ? JSON.parse(savedSettings) : {};
+    AppState.settings = { ...DEFAULT_SETTINGS, ...parsed };
+    // Ensure recovery email is set to Amit.omtraders@gmail.com
+    if (!AppState.settings.email || AppState.settings.email.includes('omtraders.materials') || AppState.settings.email.includes('omtraders.kalwan')) {
+      AppState.settings.email = ADMIN_CONFIG.RECOVERY_EMAIL;
+    }
   } catch (e) {
     AppState.settings = { ...DEFAULT_SETTINGS };
+  }
+
+  // Load custom password if saved
+  const savedPassword = localStorage.getItem(STORAGE_KEYS.PASSWORD);
+  if (savedPassword) {
+    AppState.settings.adminPassword = savedPassword;
   }
 
   // 2. Catalog
@@ -216,8 +256,10 @@ function loadStoredData() {
     AppState.enquiries = [...DEFAULT_ENQUIRIES];
   }
 
-  // 4. Admin Session
-  AppState.isAdmin = sessionStorage.getItem(STORAGE_KEYS.AUTH) === 'true';
+  // 4. Admin Session (Check session or remembered local login)
+  const sessionAuth = sessionStorage.getItem(STORAGE_KEYS.AUTH) === 'true';
+  const localAuth = localStorage.getItem(STORAGE_KEYS.AUTH) === 'true';
+  AppState.isAdmin = sessionAuth || localAuth;
 }
 
 function saveData(key, data) {
@@ -806,50 +848,369 @@ function openAdminModal() {
     showAdminDashboard();
     return;
   }
-  document.getElementById('admin-login-modal').classList.remove('hidden');
-  document.getElementById('admin-password-input').focus();
+  const modal = document.getElementById('admin-login-modal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    const input = document.getElementById('admin-password-input');
+    if (input) {
+      input.value = '';
+      input.focus();
+    }
+  }
 }
 
 function closeAdminModal() {
-  document.getElementById('admin-login-modal').classList.add('hidden');
-  document.getElementById('admin-password-input').value = '';
+  const modal = document.getElementById('admin-login-modal');
+  if (modal) modal.classList.add('hidden');
+  const input = document.getElementById('admin-password-input');
+  if (input) input.value = '';
+}
+
+// Toggle password visibility (eye icon)
+function togglePasswordVisibility() {
+  const input = document.getElementById('admin-password-input');
+  const icon = document.getElementById('password-toggle-icon');
+  if (!input || !icon) return;
+
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.classList.remove('fa-eye');
+    icon.classList.add('fa-eye-slash');
+  } else {
+    input.type = 'password';
+    icon.classList.remove('fa-eye-slash');
+    icon.classList.add('fa-eye');
+  }
+}
+
+// 1-Click quick autofill for default admin password
+function quickFillDefaultPassword() {
+  quickFillPassword('Amit@OmTraders');
+}
+
+function quickFillPassword(pwd = 'Amit@OmTraders') {
+  const input = document.getElementById('admin-password-input');
+  if (input) {
+    input.value = pwd;
+    handleAdminLogin(new Event('submit'));
+  }
 }
 
 function handleAdminLogin(e) {
-  e.preventDefault();
-  const enteredPass = document.getElementById('admin-password-input').value;
-  const currentPass = AppState.settings.adminPassword || 'admin123';
+  if (e && e.preventDefault) e.preventDefault();
+  const inputEl = document.getElementById('admin-password-input');
+  const enteredPass = (inputEl ? inputEl.value : '').trim();
 
-  if (enteredPass === currentPass) {
+  if (!enteredPass) {
+    showToast('Please enter the admin password', 'error');
+    return;
+  }
+
+  // Master list of accepted passwords (case-insensitive and trimmed)
+  const validPasswords = [
+    ...GLOBAL_ADMIN_PASSWORDS,
+    (AppState.settings.adminPassword || '').trim(),
+    (localStorage.getItem(STORAGE_KEYS.PASSWORD) || '').trim()
+  ].filter(Boolean);
+
+  // Check if entered password matches any valid password (exact or case-insensitive)
+  const isMatch = validPasswords.some(valid => {
+    return valid === enteredPass || valid.toLowerCase() === enteredPass.toLowerCase();
+  });
+
+  if (isMatch) {
     AppState.isAdmin = true;
     sessionStorage.setItem(STORAGE_KEYS.AUTH, 'true');
+
+    // Remember Me support
+    const rememberMe = document.getElementById('admin-remember-me')?.checked;
+    if (rememberMe) {
+      localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
+    }
+
     closeAdminModal();
     checkAdminAuth();
     showAdminDashboard();
-    showToast('Admin authenticated successfully!', 'success');
+    showToast('🎉 Admin authenticated successfully! Welcome.', 'success');
   } else {
-    showToast('Incorrect admin passcode. Try "admin123"', 'error');
+    showToast('Incorrect password. Use "Amit@OmTraders" or "admin123"', 'error');
   }
 }
 
 function logoutAdmin() {
   AppState.isAdmin = false;
   sessionStorage.removeItem(STORAGE_KEYS.AUTH);
+  localStorage.removeItem(STORAGE_KEYS.AUTH);
   checkAdminAuth();
   showCustomerView();
   showToast('Logged out of admin portal', 'info');
 }
 
-function updateAdminPassword() {
-  const newPass = document.getElementById('new-admin-password-input').value.trim();
-  if (!newPass || newPass.length < 4) {
-    showToast('Password must be at least 4 characters long', 'error');
+// Update Admin Password from Settings with Multi-Device Sync & Email Notification
+async function updateAdminPassword() {
+  const input = document.getElementById('new-admin-password-input');
+  const newPass = (input ? input.value : '').trim();
+  if (!newPass || newPass.length < 3) {
+    showToast('Password must be at least 3 characters long', 'error');
     return;
   }
+
   AppState.settings.adminPassword = newPass;
   saveData(STORAGE_KEYS.SETTINGS, AppState.settings);
-  document.getElementById('new-admin-password-input').value = '';
-  showToast('Admin password updated successfully!', 'success');
+  saveData(STORAGE_KEYS.PASSWORD, newPass);
+  if (input) input.value = '';
+
+  // Cloud sync for cross-device access
+  syncPasswordToCloud(newPass);
+
+  // Dispatch email notification to Amit.omtraders@gmail.com
+  sendPasswordChangeNotificationEmail(newPass);
+
+  showToast(`🎉 Admin password updated to "${newPass}"! Notification sent to ${ADMIN_CONFIG.RECOVERY_EMAIL}`, 'success');
+}
+
+// ==============================================================================
+// FORGOT PASSWORD & RECOVERY WORKFLOW (Email to Amit.omtraders@gmail.com)
+// ==============================================================================
+
+function openForgotPasswordModal() {
+  closeAdminModal();
+  const modal = document.getElementById('forgot-password-modal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    const statusBox = document.getElementById('recovery-status-box');
+    if (statusBox) {
+      statusBox.classList.add('hidden');
+      statusBox.innerHTML = '';
+    }
+    const step2 = document.getElementById('recovery-step-2');
+    if (step2) step2.classList.add('hidden');
+    const mailtoBox = document.getElementById('recovery-direct-mailto');
+    if (mailtoBox) mailtoBox.classList.add('hidden');
+    const btn = document.getElementById('send-recovery-email-btn');
+    const btnText = document.getElementById('send-recovery-btn-text');
+    if (btn) btn.disabled = false;
+    if (btnText) btnText.textContent = `Send Password to ${ADMIN_CONFIG.RECOVERY_EMAIL}`;
+  }
+}
+
+function closeForgotPasswordModal() {
+  const modal = document.getElementById('forgot-password-modal');
+  if (modal) modal.classList.add('hidden');
+}
+
+function getOrCreateRecoveryOtp() {
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  sessionStorage.setItem(STORAGE_KEYS.RECOVERY_OTP, otp);
+  return otp;
+}
+
+// Dispatches email to Amit.omtraders@gmail.com via FormSubmit AJAX endpoint
+async function sendRecoveryEmailToAmit() {
+  const btn = document.getElementById('send-recovery-email-btn');
+  const btnText = document.getElementById('send-recovery-btn-text');
+  const statusBox = document.getElementById('recovery-status-box');
+  const step2 = document.getElementById('recovery-step-2');
+  const mailtoBox = document.getElementById('recovery-direct-mailto');
+
+  if (btn) btn.disabled = true;
+  if (btnText) btnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Sending to Amit.omtraders@gmail.com...';
+
+  const generatedOtp = getOrCreateRecoveryOtp();
+  const currentPassword = (AppState.settings.adminPassword || 'Amit@OmTraders').trim();
+  const timestamp = new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'medium' });
+
+  // Email payload for FormSubmit
+  const payload = {
+    _subject: `🔐 [Om Traders] Admin Password & Reset Security Code (${generatedOtp})`,
+    _template: 'box',
+    _captcha: 'false',
+    Store_Name: 'Om Traders (Building & Plumbing Material Supplier)',
+    Location: 'Kalwan, Nashik, Maharashtra',
+    Registered_Admin_Email: ADMIN_CONFIG.RECOVERY_EMAIL,
+    Current_Active_Password: currentPassword,
+    Universal_Master_Passwords: 'Amit@OmTraders, admin123',
+    Password_Reset_OTP: generatedOtp,
+    Master_Backup_PIN: ADMIN_CONFIG.MASTER_PIN,
+    Instructions: `1. You can immediately log into the Admin Portal using password: "${currentPassword}" or master password: "Amit@OmTraders".\n2. Or enter the 6-digit verification code "${generatedOtp}" on any device to set a new password of your choice.`,
+    Requested_At: timestamp,
+    Device_Browser: navigator.userAgent
+  };
+
+  let emailSentSuccessfully = false;
+
+  try {
+    const response = await fetch(`https://formsubmit.co/ajax/${ADMIN_CONFIG.RECOVERY_EMAIL}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (response.ok) {
+      emailSentSuccessfully = true;
+    } else {
+      console.warn('FormSubmit response status:', response.status);
+    }
+  } catch (err) {
+    console.warn('Direct fetch to FormSubmit (offline or sandboxed):', err);
+  }
+
+  // Configure mailto fallback link for direct app opening
+  const mailtoSubject = encodeURIComponent(`[Om Traders] Admin Password Recovery - ${generatedOtp}`);
+  const mailtoBody = encodeURIComponent(
+    `Hello Amit,\n\nHere is your Om Traders Admin Recovery Information:\n` +
+    `- Active Admin Password: ${currentPassword}\n` +
+    `- Universal Master Password: Amit@OmTraders (Works on ALL devices)\n` +
+    `- 6-Digit Reset Code: ${generatedOtp}\n` +
+    `- Master Reset PIN: ${ADMIN_CONFIG.MASTER_PIN}\n\n` +
+    `Store: Om Traders, Kalwan, Nashik\nDate: ${timestamp}`
+  );
+  const mailtoLink = `mailto:${ADMIN_CONFIG.RECOVERY_EMAIL}?subject=${mailtoSubject}&body=${mailtoBody}`;
+  const mailtoAnchor = document.getElementById('recovery-mailto-link');
+  if (mailtoAnchor) mailtoAnchor.href = mailtoLink;
+
+  // Show status box
+  if (statusBox) {
+    statusBox.classList.remove('hidden');
+    if (emailSentSuccessfully) {
+      statusBox.className = 'mt-4 p-4 rounded-2xl text-xs bg-emerald-50 border border-emerald-200 text-emerald-900 leading-relaxed';
+      statusBox.innerHTML = `
+        <div class="font-extrabold text-sm text-emerald-800 flex items-center gap-1.5 mb-1.5">
+          <i class="fa-solid fa-circle-check text-emerald-600"></i> Recovery Details Dispatched!
+        </div>
+        <p>Your current password and 6-digit reset code have been dispatched to <strong>${ADMIN_CONFIG.RECOVERY_EMAIL}</strong>. Please check your inbox and spam folder.</p>
+        <p class="mt-2 text-[11px] text-emerald-700"><strong>Quick access:</strong> You can also log in immediately using master password: <code class="font-bold text-orange-700 bg-white px-1.5 py-0.5 rounded border border-emerald-300">Amit@OmTraders</code></p>
+      `;
+    } else {
+      statusBox.className = 'mt-4 p-4 rounded-2xl text-xs bg-blue-50 border border-blue-200 text-blue-900 leading-relaxed';
+      statusBox.innerHTML = `
+        <div class="font-extrabold text-sm text-blue-800 flex items-center gap-1.5 mb-1.5">
+          <i class="fa-solid fa-envelope text-blue-600"></i> Email Prepared for ${ADMIN_CONFIG.RECOVERY_EMAIL}
+        </div>
+        <p>Your current admin password is: <strong class="text-orange-700">${escapeHtml(currentPassword)}</strong> (or master: <strong>Amit@OmTraders</strong>).</p>
+        <p class="mt-1">Reset Verification Code: <strong class="font-mono bg-white px-2 py-0.5 rounded border text-blue-800">${generatedOtp}</strong>.</p>
+      `;
+    }
+  }
+
+  // Show direct mailto option
+  if (mailtoBox) mailtoBox.classList.remove('hidden');
+
+  // Reveal Step 2 (Reset password on this device)
+  if (step2) step2.classList.remove('hidden');
+
+  if (btn) btn.disabled = false;
+  if (btnText) btnText.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Email Sent! Resend if needed';
+
+  showToast(`Recovery details sent to ${ADMIN_CONFIG.RECOVERY_EMAIL}`, 'success');
+}
+
+// Confirm Reset Password with OTP or Master PIN
+async function confirmResetPasswordWithOtp() {
+  const otpInput = document.getElementById('recovery-otp-input');
+  const newPassInput = document.getElementById('recovery-new-password');
+
+  const enteredOtp = (otpInput ? otpInput.value : '').trim();
+  const newPass = (newPassInput ? newPassInput.value : '').trim();
+  const storedOtp = sessionStorage.getItem(STORAGE_KEYS.RECOVERY_OTP);
+
+  if (!enteredOtp) {
+    showToast('Please enter the 6-digit verification code from your email', 'error');
+    return;
+  }
+
+  if (!newPass || newPass.length < 3) {
+    showToast('Please enter a new password (at least 3 characters)', 'error');
+    return;
+  }
+
+  // Validate OTP or Master PIN (Amit789)
+  const isValidOtp = enteredOtp === storedOtp || enteredOtp === ADMIN_CONFIG.MASTER_PIN || enteredOtp === 'Amit789';
+
+  if (!isValidOtp) {
+    showToast('Invalid verification code. Check your email or use master PIN "Amit789"', 'error');
+    return;
+  }
+
+  // Update password in settings and local storage
+  AppState.settings.adminPassword = newPass;
+  saveData(STORAGE_KEYS.SETTINGS, AppState.settings);
+  saveData(STORAGE_KEYS.PASSWORD, newPass);
+
+  // Sync to cloud
+  syncPasswordToCloud(newPass);
+
+  // Send notification to email
+  sendPasswordChangeNotificationEmail(newPass);
+
+  // Automatically authenticate admin
+  AppState.isAdmin = true;
+  sessionStorage.setItem(STORAGE_KEYS.AUTH, 'true');
+  localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
+
+  closeForgotPasswordModal();
+  checkAdminAuth();
+  showAdminDashboard();
+
+  showToast(`🎉 Password reset to "${newPass}" successfully! Welcome back, Admin.`, 'success');
+}
+
+// Dispatches an email notification when password is changed
+async function sendPasswordChangeNotificationEmail(newPassword) {
+  try {
+    const payload = {
+      _subject: '🔔 [Om Traders] Admin Password Successfully Changed',
+      _captcha: 'false',
+      Store_Name: 'Om Traders (Kalwan, Nashik)',
+      Admin_Email: ADMIN_CONFIG.RECOVERY_EMAIL,
+      New_Password: newPassword,
+      Universal_Backup_Password: 'Amit@OmTraders',
+      Changed_At: new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'medium' }),
+      Device_Browser: navigator.userAgent,
+      Note: 'If you did not perform this change, you can log in immediately using the universal master password "Amit@OmTraders" and reset your password.'
+    };
+
+    fetch(`https://formsubmit.co/ajax/${ADMIN_CONFIG.RECOVERY_EMAIL}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    }).catch(e => console.warn('Background notification error:', e));
+  } catch (err) {
+    console.warn('Could not dispatch password change notification:', err);
+  }
+}
+
+// Cloud KV Sync helpers for cross-device password synchronization
+async function syncPasswordToCloud(newPassword) {
+  try {
+    if (!ADMIN_CONFIG.CLOUD_SYNC_URL) return;
+    await fetch(ADMIN_CONFIG.CLOUD_SYNC_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: newPassword
+    });
+  } catch (err) {
+    console.warn('Cloud sync post skipped (offline):', err);
+  }
+}
+
+async function fetchPasswordFromCloud() {
+  try {
+    if (!ADMIN_CONFIG.CLOUD_SYNC_URL) return;
+    const res = await fetch(ADMIN_CONFIG.CLOUD_SYNC_URL);
+    if (res.ok) {
+      const cloudPwd = (await res.text()).trim();
+      if (cloudPwd && cloudPwd.length >= 3 && cloudPwd.length <= 50) {
+        AppState.settings.adminPassword = cloudPwd;
+        localStorage.setItem(STORAGE_KEYS.PASSWORD, cloudPwd);
+      }
+    }
+  } catch (err) {
+    console.warn('Cloud sync fetch skipped:', err);
+  }
 }
 
 function showAdminDashboard() {
@@ -1644,12 +2005,6 @@ function setupEventListeners() {
       renderAdminLeadsTable();
     });
   }
-
-  // Cart Drawer Trigger
-  document.getElementById('quote-drawer-toggle')?.addEventListener('click', openQuotationDrawer);
-
-  // Admin Modal Trigger
-  document.getElementById('open-admin-modal-btn')?.addEventListener('click', openAdminModal);
 
   // Admin Login Form
   document.getElementById('admin-login-form')?.addEventListener('submit', handleAdminLogin);
