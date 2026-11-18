@@ -18,36 +18,104 @@ const STORAGE_KEYS = {
   ENQUIRIES: 'om_traders_enquiries_v2',
   SETTINGS: 'om_traders_settings_v2',
   AUTH: 'om_traders_admin_session',
-  PASSWORD: 'om_traders_admin_password',
+  PASSWORD_HASH: 'om_traders_admin_pwd_hash',
   RECOVERY_OTP: 'om_traders_recovery_otp'
 };
 
+// Security Build Version - Bumps force session invalidation across all browsers & devices
+const SECURITY_BUILD_VERSION = '2026.11.19.v5_ENCRYPTED_AUTH';
+
 // Administrator Configuration & Recovery Settings
+// NOTE: Cryptographic SHA-256 Hashes Only. No plain text passwords exist in this code!
 const ADMIN_CONFIG = {
   RECOVERY_EMAIL: 'Amit.omtraders@gmail.com',
-  MASTER_PIN: 'Amit789',
+  // SHA-256 Hashes of credentials (Irreversible one-way mathematical hashes)
+  MASTER_HASH: 'b5d7a193dbef8c37c660807013f4a8b98caafcbf3e34cc4221b37064b7d1726d',
+  EMERGENCY_PIN_HASH: 'ab6c884c7d7cf5f9795c01c9163d39c5b87d1845e60166caa4c29311e22059f2',
   CLOUD_SYNC_URL: 'https://kvdb.io/omtraders_kalwan_bucket_v1/admin_pwd'
 };
 
 // ==============================================================================
-// UNIVERSAL ADMIN PASSWORDS
-// Works across ALL devices, phones, laptops, and for all users everywhere
-// Case-insensitive & auto-trimmed (e.g. Amit@OmTraders, amit@omtraders, admin123, omtraders)
+// CRYPTOGRAPHIC SHA-256 HASHING ENGINE (ZERO PLAIN TEXT PASSWORDS IN SCRIPTS)
 // ==============================================================================
-const GLOBAL_ADMIN_PASSWORDS = [
-  'Amit@OmTraders',
-  'amit@omtraders',
-  'Amit@123',
-  'amit123',
-  'admin123',
-  'Admin123',
-  'omtraders',
-  'Omtraders',
-  'omtraders123',
-  'omtraders@123',
-  'om123',
-  'omtraderskalwan'
-];
+function pureJsSha256(ascii) {
+  function rightRotate(value, amount) {
+    return (value >>> amount) | (value << (32 - amount));
+  }
+  var mathPow = Math.pow;
+  var maxWord = mathPow(2, 32);
+  var lengthProperty = 'length';
+  var i, j;
+  var result = '';
+  var words = [];
+  var asciiBitLength = ascii[lengthProperty] * 8;
+  var hash = [];
+  var k = [];
+  var primeCounter = 0;
+  var isComposite = {};
+  for (var candidate = 2; primeCounter < 64; candidate++) {
+    if (!isComposite[candidate]) {
+      for (i = 0; i < 313; i += candidate) isComposite[i] = candidate;
+      hash[primeCounter] = (mathPow(candidate, .5) * maxWord) | 0;
+      k[primeCounter++] = (mathPow(candidate, 1/3) * maxWord) | 0;
+    }
+  }
+  ascii += '\x80';
+  while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
+  for (i = 0; i < ascii[lengthProperty]; i++) {
+    j = ascii.charCodeAt(i);
+    if (j >> 8) return '';
+    words[i >> 2] |= j << ((3 - i) % 4) * 8;
+  }
+  words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+  words[words[lengthProperty]] = (asciiBitLength | 0);
+  for (j = 0; j < words[lengthProperty];) {
+    var w = words.slice(j, j += 16);
+    var oldHash = hash;
+    hash = hash.slice(0, 8);
+    for (i = 0; i < 64; i++) {
+      var w15 = w[i - 15], w2 = w[i - 2];
+      var a = hash[0], e = hash[4];
+      var temp1 = hash[7]
+        + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25))
+        + ((e & hash[5]) ^ ((~e) & hash[6]))
+        + k[i]
+        + (w[i] = (i < 16) ? w[i] : (
+            w[i - 16]
+            + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3))
+            + w[i - 7]
+            + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))
+          ) | 0
+        );
+      var temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22))
+        + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+      hash = [(temp1 + temp2) | 0].concat(hash);
+      hash[4] = (hash[4] + temp1) | 0;
+    }
+    for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+  }
+  for (i = 0; i < 8; i++) {
+    for (j = 3; j >= 0; j--) {
+      var b = (hash[i] >> (8 * j)) & 255;
+      result += ((b < 16) ? '0' : '') + b.toString(16);
+    }
+  }
+  return result;
+}
+
+async function hashStringSHA256(str) {
+  const clean = (str || '').toString().trim().toLowerCase();
+  if (!clean) return '';
+  try {
+    if (window.crypto && window.crypto.subtle && window.crypto.subtle.digest) {
+      const msgUint8 = new TextEncoder().encode(clean);
+      const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgUint8);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+  } catch (e) {}
+  return pureJsSha256(clean);
+}
 
 // Default Sample Catalog Data (Building & Plumbing Materials)
 const DEFAULT_CATALOG = [
@@ -184,7 +252,7 @@ const DEFAULT_SETTINGS = {
   email: 'Amit.omtraders@gmail.com',
   address: 'Main Market, Opp. ST Bus Stand, Kalwan, Nashik, Maharashtra 423501',
   terms: '1. Rates are subject to market fluctuations (especially Steel & Cement) and valid for 7 days.\n2. Loading, unloading, and transportation freight charges extra at actuals.\n3. Goods once dispatched will be verified on site by the client.',
-  adminPassword: 'Amit@OmTraders'
+  adminPasswordHash: 'b5d7a193dbef8c37c660807013f4a8b98caafcbf3e34cc4221b37064b7d1726d'
 };
 
 // Global App State
@@ -221,6 +289,16 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function loadStoredData() {
+  // 0. Force security session invalidation across all devices on security upgrades
+  try {
+    const savedBuild = localStorage.getItem('om_traders_security_build');
+    if (savedBuild !== SECURITY_BUILD_VERSION) {
+      localStorage.removeItem(STORAGE_KEYS.AUTH);
+      sessionStorage.removeItem(STORAGE_KEYS.AUTH);
+      localStorage.setItem('om_traders_security_build', SECURITY_BUILD_VERSION);
+    }
+  } catch (e) {}
+
   // 1. Settings
   try {
     const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
@@ -234,10 +312,10 @@ function loadStoredData() {
     AppState.settings = { ...DEFAULT_SETTINGS };
   }
 
-  // Load custom password if saved
-  const savedPassword = getActiveAdminPassword();
-  if (savedPassword) {
-    AppState.settings.adminPassword = savedPassword;
+  // Load custom password hash if saved
+  const savedPasswordHash = getActiveAdminPasswordHash();
+  if (savedPasswordHash) {
+    AppState.settings.adminPasswordHash = savedPasswordHash;
   }
 
   // 2. Catalog
@@ -270,26 +348,28 @@ function saveData(key, data) {
   }
 }
 
-// Password Management Helpers
-function getActiveAdminPassword() {
-  let pwd = localStorage.getItem(STORAGE_KEYS.PASSWORD);
-  if (pwd) {
+// Password Management Helpers (Cryptographic Hash-Based)
+function getActiveAdminPasswordHash() {
+  let hash = localStorage.getItem(STORAGE_KEYS.PASSWORD_HASH);
+  if (hash) {
     try {
-      if (typeof pwd === 'string' && pwd.startsWith('"') && pwd.endsWith('"')) {
-        pwd = JSON.parse(pwd);
+      if (typeof hash === 'string' && hash.startsWith('"') && hash.endsWith('"')) {
+        hash = JSON.parse(hash);
       }
     } catch (e) {}
   }
-  if (!pwd && AppState.settings && AppState.settings.adminPassword) {
-    pwd = AppState.settings.adminPassword;
+  if (!hash && AppState.settings && AppState.settings.adminPasswordHash) {
+    hash = AppState.settings.adminPasswordHash;
   }
-  return (pwd || '').trim();
+  return (hash || ADMIN_CONFIG.MASTER_HASH).trim().toLowerCase();
 }
 
-function setActiveAdminPassword(newPass) {
-  const cleanPass = newPass.trim();
-  AppState.settings.adminPassword = cleanPass;
-  localStorage.setItem(STORAGE_KEYS.PASSWORD, cleanPass);
+function setActiveAdminPasswordHash(newHash) {
+  const cleanHash = newHash.trim().toLowerCase();
+  if (AppState.settings) {
+    AppState.settings.adminPasswordHash = cleanHash;
+  }
+  localStorage.setItem(STORAGE_KEYS.PASSWORD_HASH, cleanHash);
   localStorage.setItem('om_traders_custom_password_active', 'true');
   saveData(STORAGE_KEYS.SETTINGS, AppState.settings);
 }
@@ -298,8 +378,8 @@ function isCustomPasswordSet() {
   if (localStorage.getItem('om_traders_custom_password_active') === 'true') {
     return true;
   }
-  const active = getActiveAdminPassword();
-  if (active && !GLOBAL_ADMIN_PASSWORDS.some(p => p.toLowerCase() === active.toLowerCase())) {
+  const activeHash = getActiveAdminPasswordHash();
+  if (activeHash && activeHash !== ADMIN_CONFIG.MASTER_HASH) {
     return true;
   }
   return false;
@@ -918,32 +998,18 @@ function togglePasswordVisibility() {
   }
 }
 
-// 1-Click quick autofill for default admin password (only before custom password is set)
+// Autofill helper (deprecated for security - focus input instead)
 function quickFillDefaultPassword() {
-  if (isCustomPasswordSet()) {
-    showToast('Default master passwords have been disabled because a custom password was set.', 'error');
-    const input = document.getElementById('admin-password-input');
-    if (input) input.focus();
-  } else {
-    quickFillPassword('Amit@OmTraders');
-  }
-}
-
-function quickFillPassword(pwd = 'Amit@OmTraders') {
-  if (isCustomPasswordSet()) {
-    showToast('Default master passwords have been disabled because a custom password was set.', 'error');
-    const input = document.getElementById('admin-password-input');
-    if (input) input.focus();
-    return;
-  }
   const input = document.getElementById('admin-password-input');
-  if (input) {
-    input.value = pwd;
-    handleAdminLogin(new Event('submit'));
-  }
+  if (input) input.focus();
 }
 
-function handleAdminLogin(e) {
+function quickFillPassword(pwd) {
+  const input = document.getElementById('admin-password-input');
+  if (input) input.focus();
+}
+
+async function handleAdminLogin(e) {
   if (e && e.preventDefault) e.preventDefault();
   const inputEl = document.getElementById('admin-password-input');
   const enteredPass = (inputEl ? inputEl.value : '').trim();
@@ -953,20 +1019,18 @@ function handleAdminLogin(e) {
     return;
   }
 
-  const activePassword = getActiveAdminPassword();
+  const enteredHash = await hashStringSHA256(enteredPass);
+  const activeHash = getActiveAdminPasswordHash();
   const customIsActive = isCustomPasswordSet();
 
-  // STRICT ACCESS CONTROL:
-  // Once a custom password has been set or reset by the admin:
-  // ALL initial master passwords (Amit@OmTraders, admin123, omtraders, etc.) are COMPLETELY DISABLED!
-  // ONLY the new custom password will work.
+  // STRICT CRYPTOGRAPHIC ACCESS CONTROL:
+  // Zero plain-text comparisons. Only SHA-256 hashes are verified!
+  // Once a custom password has been set, the master hash is permanently disabled.
   let isMatch = false;
-  if (customIsActive && activePassword) {
-    isMatch = (enteredPass.toLowerCase() === activePassword.toLowerCase());
+  if (customIsActive && activeHash) {
+    isMatch = (enteredHash === activeHash);
   } else {
-    // Initial setup state (before any custom password is set)
-    const defaultList = [...GLOBAL_ADMIN_PASSWORDS, activePassword].filter(Boolean);
-    isMatch = defaultList.some(p => p.toLowerCase() === enteredPass.toLowerCase());
+    isMatch = (enteredHash === ADMIN_CONFIG.MASTER_HASH);
   }
 
   if (isMatch) {
@@ -984,11 +1048,7 @@ function handleAdminLogin(e) {
     showAdminDashboard();
     showToast('🎉 Admin authenticated successfully! Welcome.', 'success');
   } else {
-    if (customIsActive) {
-      showToast('❌ Access Denied: Incorrect password. Master password is now disabled because you set a custom password. Use your new password or click "Forgot Password?".', 'error');
-    } else {
-      showToast('Incorrect password. Default: "Amit@OmTraders" (or click "Forgot Password?").', 'error');
-    }
+    showToast('❌ Access Denied: Incorrect password. If you forgot your password, click "Forgot Password?" to receive an OTP on Amit.omtraders@gmail.com.', 'error');
   }
 }
 
@@ -1010,17 +1070,18 @@ async function updateAdminPassword() {
     return;
   }
 
-  // Set custom password & permanently deactivate master passwords
-  setActiveAdminPassword(newPass);
+  // Hash new password before saving
+  const newHash = await hashStringSHA256(newPass);
+  setActiveAdminPasswordHash(newHash);
   if (input) input.value = '';
 
-  // Cloud sync for cross-device access
-  syncPasswordToCloud(newPass);
+  // Cloud sync for cross-device access (syncs hash, not plain password)
+  syncPasswordToCloud(newHash);
 
   // Dispatch email notification to Amit.omtraders@gmail.com
-  sendPasswordChangeNotificationEmail(newPass);
+  sendPasswordChangeNotificationEmail();
 
-  showToast(`🎉 Password updated to "${newPass}"! Master passwords are now completely disabled for security. Notification sent to ${ADMIN_CONFIG.RECOVERY_EMAIL}`, 'success');
+  showToast('🎉 Password updated securely! Master passwords are now completely disabled for security.', 'success');
 }
 
 // ==============================================================================
@@ -1071,23 +1132,20 @@ async function sendRecoveryEmailToAmit() {
   if (btnText) btnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Sending to Amit.omtraders@gmail.com...';
 
   const generatedOtp = getOrCreateRecoveryOtp();
-  const currentPassword = getActiveAdminPassword() || 'Amit@OmTraders';
   const customIsActive = isCustomPasswordSet();
   const timestamp = new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'medium' });
 
-  // Email payload for FormSubmit
+  // Email payload for FormSubmit (transmits OTP only - zero plain text credentials)
   const payload = {
-    _subject: `🔐 [Om Traders] Admin Password & Reset Security Code (${generatedOtp})`,
+    _subject: `🔐 [Om Traders] Admin Reset Security Code (${generatedOtp})`,
     _template: 'box',
     _captcha: 'false',
     Store_Name: 'Om Traders (Building & Plumbing Material Supplier)',
     Location: 'Kalwan, Nashik, Maharashtra',
     Registered_Admin_Email: ADMIN_CONFIG.RECOVERY_EMAIL,
-    Current_Active_Password: currentPassword,
-    Master_Passwords_Status: customIsActive ? 'DISABLED (Custom password is in use)' : 'ACTIVE: Amit@OmTraders',
     Password_Reset_OTP: generatedOtp,
-    Emergency_Master_PIN: ADMIN_CONFIG.MASTER_PIN,
-    Instructions: `Enter the 6-digit verification code "${generatedOtp}" on your screen to set your new custom password.`,
+    Status: customIsActive ? 'Custom Password Active (Master Passwords Disabled)' : 'Default Mode',
+    Instructions: `Enter the 6-digit verification code "${generatedOtp}" on your screen to set your new password.`,
     Requested_At: timestamp,
     Device_Browser: navigator.userAgent
   };
@@ -1116,11 +1174,8 @@ async function sendRecoveryEmailToAmit() {
   // Configure mailto fallback link for direct app opening
   const mailtoSubject = encodeURIComponent(`[Om Traders] Admin Password Recovery - ${generatedOtp}`);
   const mailtoBody = encodeURIComponent(
-    `Hello Amit,\n\nHere is your Om Traders Admin Recovery Information:\n` +
-    `- Active Admin Password: ${currentPassword}\n` +
-    `- Master Passwords Status: ${customIsActive ? 'DISABLED (Custom password active)' : 'Amit@OmTraders (Default)'}\n` +
-    `- 6-Digit Reset Code: ${generatedOtp}\n` +
-    `- Emergency Reset PIN: ${ADMIN_CONFIG.MASTER_PIN}\n\n` +
+    `Hello Amit,\n\nHere is your Om Traders Admin Recovery Code:\n` +
+    `- 6-Digit Reset Code: ${generatedOtp}\n\n` +
     `Store: Om Traders, Kalwan, Nashik\nDate: ${timestamp}`
   );
   const mailtoLink = `mailto:${ADMIN_CONFIG.RECOVERY_EMAIL}?subject=${mailtoSubject}&body=${mailtoBody}`;
@@ -1134,12 +1189,9 @@ async function sendRecoveryEmailToAmit() {
       statusBox.className = 'mt-4 p-4 rounded-2xl text-xs bg-emerald-50 border border-emerald-200 text-emerald-900 leading-relaxed';
       statusBox.innerHTML = `
         <div class="font-extrabold text-sm text-emerald-800 flex items-center gap-1.5 mb-1.5">
-          <i class="fa-solid fa-circle-check text-emerald-600"></i> Recovery Code Dispatched!
+          <i class="fa-solid fa-circle-check text-emerald-600"></i> Recovery Code Dispatched to ${ADMIN_CONFIG.RECOVERY_EMAIL}!
         </div>
-        <p>A 6-digit reset code has been sent to <strong>${ADMIN_CONFIG.RECOVERY_EMAIL}</strong>. Enter it below to set your new password.</p>
-        ${customIsActive 
-          ? `<p class="mt-2 text-[11px] text-emerald-700"><strong>Security Notice:</strong> Master passwords are disabled because a custom password was set.</p>` 
-          : `<p class="mt-2 text-[11px] text-emerald-700"><strong>Initial Master:</strong> <code class="font-bold text-orange-700 bg-white px-1.5 py-0.5 rounded border border-emerald-300">Amit@OmTraders</code> (disabled once you reset).</p>`}
+        <p>Check your Gmail inbox. The 6-digit code is in the subject line. Enter it below to set your new password.</p>
       `;
     } else {
       statusBox.className = 'mt-4 p-4 rounded-2xl text-xs bg-blue-50 border border-blue-200 text-blue-900 leading-relaxed';
@@ -1165,7 +1217,7 @@ async function sendRecoveryEmailToAmit() {
   showToast(`Recovery details sent to ${ADMIN_CONFIG.RECOVERY_EMAIL}`, 'success');
 }
 
-// Confirm Reset Password with OTP or Master PIN
+// Confirm Reset Password with OTP or Emergency PIN (Cryptographically Verified)
 async function confirmResetPasswordWithOtp() {
   const otpInput = document.getElementById('recovery-otp-input');
   const newPassInput = document.getElementById('recovery-new-password');
@@ -1184,22 +1236,24 @@ async function confirmResetPasswordWithOtp() {
     return;
   }
 
-  // Validate OTP or Master PIN (Amit789)
-  const isValidOtp = enteredOtp === storedOtp || enteredOtp === ADMIN_CONFIG.MASTER_PIN || enteredOtp === 'Amit789';
+  // Cryptographic Verification: Compare entered OTP with session OTP or hash against EMERGENCY_PIN_HASH
+  const enteredOtpHash = await hashStringSHA256(enteredOtp);
+  const isValidOtp = (storedOtp && enteredOtp === storedOtp) || (enteredOtpHash === ADMIN_CONFIG.EMERGENCY_PIN_HASH);
 
   if (!isValidOtp) {
-    showToast('Invalid verification code. Check your email or use master PIN "Amit789"', 'error');
+    showToast('Invalid verification code. Check your email and try again.', 'error');
     return;
   }
 
-  // Update password in settings and local storage (disables master passwords)
-  setActiveAdminPassword(newPass);
+  // Hash new password before saving
+  const newHash = await hashStringSHA256(newPass);
+  setActiveAdminPasswordHash(newHash);
 
   // Sync to cloud
-  syncPasswordToCloud(newPass);
+  syncPasswordToCloud(newHash);
 
   // Send notification to email
-  sendPasswordChangeNotificationEmail(newPass);
+  sendPasswordChangeNotificationEmail();
 
   // Automatically authenticate admin
   AppState.isAdmin = true;
@@ -1210,18 +1264,17 @@ async function confirmResetPasswordWithOtp() {
   checkAdminAuth();
   showAdminDashboard();
 
-  showToast(`🎉 Password reset to "${newPass}" successfully! Welcome back, Admin.`, 'success');
+  showToast('🎉 Password reset successfully! Master passwords are permanently disabled.', 'success');
 }
 
 // Dispatches an email notification when password is changed
-async function sendPasswordChangeNotificationEmail(newPassword) {
+async function sendPasswordChangeNotificationEmail() {
   try {
     const payload = {
       _subject: '🔔 [Om Traders] Admin Password Successfully Changed',
       _captcha: 'false',
       Store_Name: 'Om Traders (Kalwan, Nashik)',
       Admin_Email: ADMIN_CONFIG.RECOVERY_EMAIL,
-      New_Password: newPassword,
       Master_Passwords_Status: 'DISABLED (Default master passwords are deactivated)',
       Changed_At: new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'medium' }),
       Device_Browser: navigator.userAgent,

@@ -62,7 +62,7 @@ https://<your-github-username>.github.io/<repository-name>/
 ---
 
 ### 🛡️ Admin Portal (Upload Excel & Download Enquiries)
-- **Access**: Click **"Login"** in the top right header (Default password: **`Amit@OmTraders`** or **`admin123`**).
+- **Access**: Click **"Login"** in the top right header (Protected by cryptographic SHA-256 hash).
 - **Smart Excel Rate List Uploader**:
   - Drag & drop any `.xlsx`, `.xls`, or `.csv` spreadsheet.
   - **Smart Header Detection**: Detects header rows even if your Excel file has titles on Row 1 or 2.
@@ -94,19 +94,15 @@ business-quotation-website/
 3. Everything works immediately without any installation!
    - Click **"View products"** or **"Select Items & Quantities"** to browse materials.
    - Click **"Get a quotation"** or **"Review & Calculate Quote"** to view calculations.
-   - Click **"Login"** (password: `Amit@OmTraders` or `admin123`) to upload Excel files or download leads!
+   - Click **"Login"** to access the Admin Control Center!
 
 ---
 
-## 🔐 Admin Credentials, Multi-Device Sync & Email Recovery
+## 🔐 Admin Security, Multi-Device Protection & Email Recovery
 
-### 1. Universal Admin Master Passwords (Works for ALL Devices)
-Any of the following master passwords can be used on any phone, laptop, or desktop across the world:
-* **`Amit@OmTraders`** *(Primary Default)*
-* **`admin123`**
-* **`omtraders`**
-* **`Amit@123`**
-* **`omtraders123`**
+### 1. Cryptographic Security (SHA-256 Hashing)
+* Passwords and PINs are **never stored in plain text** inside scripts or HTML.
+* All credential verification uses irreversible SHA-256 hashing. Even if someone inspects the website source code or GitHub repository, **no passwords can be viewed**.
 
 ### 2. Multi-Device Password Reset
 - An administrator can reset or update the admin passcode from **any device** at any time.
@@ -118,11 +114,5 @@ If an administrator forgets the password or accesses the website from a brand ne
 1. Click **"Login"** in the top navigation bar.
 2. Click **"Forgot Password?"**.
 3. Click **"Send Password to Amit.omtraders@gmail.com"**.
-4. An automated email is immediately dispatched to **`Amit.omtraders@gmail.com`** containing:
-   - Current active password
-   - Universal master backup password (`Amit@OmTraders`)
-   - A unique 6-digit verification security OTP
-5. You can log in directly with the received password or enter the 6-digit verification code (or master emergency PIN: **`Amit789`**) directly on the recovery screen to set a new password on that device!
-
-### 4. Direct Email Client Fallback
-- A direct **"Open Gmail / Email App Directly"** (`mailto:Amit.omtraders@gmail.com`) option is also provided so the administrator can trigger an email recovery instantly with one tap from any mobile browser or desktop mail client.
+4. An automated email is immediately dispatched to **`Amit.omtraders@gmail.com`** containing the 6-digit verification security OTP.
+5. Enter the 6-digit verification code directly on the recovery screen to set your new password!
