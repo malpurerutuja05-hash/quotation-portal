@@ -1098,14 +1098,15 @@ function openForgotPasswordModal() {
       statusBox.classList.add('hidden');
       statusBox.innerHTML = '';
     }
+    // Step 2 is ALWAYS immediately visible so admin can reset with Emergency PIN without waiting
     const step2 = document.getElementById('recovery-step-2');
-    if (step2) step2.classList.add('hidden');
+    if (step2) step2.classList.remove('hidden');
     const mailtoBox = document.getElementById('recovery-direct-mailto');
     if (mailtoBox) mailtoBox.classList.add('hidden');
     const btn = document.getElementById('send-recovery-email-btn');
     const btnText = document.getElementById('send-recovery-btn-text');
     if (btn) btn.disabled = false;
-    if (btnText) btnText.textContent = `Send Password to ${ADMIN_CONFIG.RECOVERY_EMAIL}`;
+    if (btnText) btnText.textContent = `Send Code to ${ADMIN_CONFIG.RECOVERY_EMAIL}`;
   }
 }
 
@@ -1131,6 +1132,9 @@ async function sendRecoveryEmailToAmit() {
   if (btn) btn.disabled = true;
   if (btnText) btnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Sending to Amit.omtraders@gmail.com...';
 
+  // Ensure Step 2 is visible immediately so user never waits to enter PIN or code
+  if (step2) step2.classList.remove('hidden');
+
   const generatedOtp = getOrCreateRecoveryOtp();
   const customIsActive = isCustomPasswordSet();
   const timestamp = new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'medium' });
@@ -1153,14 +1157,20 @@ async function sendRecoveryEmailToAmit() {
   let emailSentSuccessfully = false;
 
   try {
+    // 8-second timeout so button never hangs or stays stuck loading
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+
     const response = await fetch(`https://formsubmit.co/ajax/${ADMIN_CONFIG.RECOVERY_EMAIL}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
 
     if (response.ok) {
       emailSentSuccessfully = true;
@@ -1168,7 +1178,7 @@ async function sendRecoveryEmailToAmit() {
       console.warn('FormSubmit response status:', response.status);
     }
   } catch (err) {
-    console.warn('Direct fetch to FormSubmit (offline or sandboxed):', err);
+    console.warn('Direct fetch to FormSubmit (offline, timeout or sandboxed):', err);
   }
 
   // Configure mailto fallback link for direct app opening
