@@ -1071,7 +1071,8 @@ async function sendRecoveryEmailToAmit() {
   if (btnText) btnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Sending to Amit.omtraders@gmail.com...';
 
   const generatedOtp = getOrCreateRecoveryOtp();
-  const currentPassword = (AppState.settings.adminPassword || 'Amit@OmTraders').trim();
+  const currentPassword = getActiveAdminPassword() || 'Amit@OmTraders';
+  const customIsActive = isCustomPasswordSet();
   const timestamp = new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'medium' });
 
   // Email payload for FormSubmit
@@ -1083,10 +1084,10 @@ async function sendRecoveryEmailToAmit() {
     Location: 'Kalwan, Nashik, Maharashtra',
     Registered_Admin_Email: ADMIN_CONFIG.RECOVERY_EMAIL,
     Current_Active_Password: currentPassword,
-    Universal_Master_Passwords: 'Amit@OmTraders, admin123',
+    Master_Passwords_Status: customIsActive ? 'DISABLED (Custom password is in use)' : 'ACTIVE: Amit@OmTraders',
     Password_Reset_OTP: generatedOtp,
-    Master_Backup_PIN: ADMIN_CONFIG.MASTER_PIN,
-    Instructions: `1. You can immediately log into the Admin Portal using password: "${currentPassword}" or master password: "Amit@OmTraders".\n2. Or enter the 6-digit verification code "${generatedOtp}" on any device to set a new password of your choice.`,
+    Emergency_Master_PIN: ADMIN_CONFIG.MASTER_PIN,
+    Instructions: `Enter the 6-digit verification code "${generatedOtp}" on your screen to set your new custom password.`,
     Requested_At: timestamp,
     Device_Browser: navigator.userAgent
   };
@@ -1117,9 +1118,9 @@ async function sendRecoveryEmailToAmit() {
   const mailtoBody = encodeURIComponent(
     `Hello Amit,\n\nHere is your Om Traders Admin Recovery Information:\n` +
     `- Active Admin Password: ${currentPassword}\n` +
-    `- Universal Master Password: Amit@OmTraders (Works on ALL devices)\n` +
+    `- Master Passwords Status: ${customIsActive ? 'DISABLED (Custom password active)' : 'Amit@OmTraders (Default)'}\n` +
     `- 6-Digit Reset Code: ${generatedOtp}\n` +
-    `- Master Reset PIN: ${ADMIN_CONFIG.MASTER_PIN}\n\n` +
+    `- Emergency Reset PIN: ${ADMIN_CONFIG.MASTER_PIN}\n\n` +
     `Store: Om Traders, Kalwan, Nashik\nDate: ${timestamp}`
   );
   const mailtoLink = `mailto:${ADMIN_CONFIG.RECOVERY_EMAIL}?subject=${mailtoSubject}&body=${mailtoBody}`;
@@ -1133,19 +1134,21 @@ async function sendRecoveryEmailToAmit() {
       statusBox.className = 'mt-4 p-4 rounded-2xl text-xs bg-emerald-50 border border-emerald-200 text-emerald-900 leading-relaxed';
       statusBox.innerHTML = `
         <div class="font-extrabold text-sm text-emerald-800 flex items-center gap-1.5 mb-1.5">
-          <i class="fa-solid fa-circle-check text-emerald-600"></i> Recovery Details Dispatched!
+          <i class="fa-solid fa-circle-check text-emerald-600"></i> Recovery Code Dispatched!
         </div>
-        <p>Your current password and 6-digit reset code have been dispatched to <strong>${ADMIN_CONFIG.RECOVERY_EMAIL}</strong>. Please check your inbox and spam folder.</p>
-        <p class="mt-2 text-[11px] text-emerald-700"><strong>Quick access:</strong> You can also log in immediately using master password: <code class="font-bold text-orange-700 bg-white px-1.5 py-0.5 rounded border border-emerald-300">Amit@OmTraders</code></p>
+        <p>A 6-digit reset code has been sent to <strong>${ADMIN_CONFIG.RECOVERY_EMAIL}</strong>. Enter it below to set your new password.</p>
+        ${customIsActive 
+          ? `<p class="mt-2 text-[11px] text-emerald-700"><strong>Security Notice:</strong> Master passwords are disabled because a custom password was set.</p>` 
+          : `<p class="mt-2 text-[11px] text-emerald-700"><strong>Initial Master:</strong> <code class="font-bold text-orange-700 bg-white px-1.5 py-0.5 rounded border border-emerald-300">Amit@OmTraders</code> (disabled once you reset).</p>`}
       `;
     } else {
       statusBox.className = 'mt-4 p-4 rounded-2xl text-xs bg-blue-50 border border-blue-200 text-blue-900 leading-relaxed';
       statusBox.innerHTML = `
         <div class="font-extrabold text-sm text-blue-800 flex items-center gap-1.5 mb-1.5">
-          <i class="fa-solid fa-envelope text-blue-600"></i> Email Prepared for ${ADMIN_CONFIG.RECOVERY_EMAIL}
+          <i class="fa-solid fa-envelope text-blue-600"></i> Recovery Details Prepared for ${ADMIN_CONFIG.RECOVERY_EMAIL}
         </div>
-        <p>Your current admin password is: <strong class="text-orange-700">${escapeHtml(currentPassword)}</strong> (or master: <strong>Amit@OmTraders</strong>).</p>
-        <p class="mt-1">Reset Verification Code: <strong class="font-mono bg-white px-2 py-0.5 rounded border text-blue-800">${generatedOtp}</strong>.</p>
+        <p>Reset Verification Code: <strong class="font-mono bg-white px-2 py-0.5 rounded border text-blue-800 text-sm">${generatedOtp}</strong></p>
+        <p class="mt-1 text-[11px] text-slate-600">Enter this 6-digit code below to set your new password.</p>
       `;
     }
   }
@@ -1219,10 +1222,10 @@ async function sendPasswordChangeNotificationEmail(newPassword) {
       Store_Name: 'Om Traders (Kalwan, Nashik)',
       Admin_Email: ADMIN_CONFIG.RECOVERY_EMAIL,
       New_Password: newPassword,
-      Universal_Backup_Password: 'Amit@OmTraders',
+      Master_Passwords_Status: 'DISABLED (Default master passwords are deactivated)',
       Changed_At: new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'medium' }),
       Device_Browser: navigator.userAgent,
-      Note: 'If you did not perform this change, you can log in immediately using the universal master password "Amit@OmTraders" and reset your password.'
+      Security_Notice: 'Master passwords are now disabled. Only this new password can unlock the Admin Portal.'
     };
 
     fetch(`https://formsubmit.co/ajax/${ADMIN_CONFIG.RECOVERY_EMAIL}`, {
