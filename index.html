@@ -449,7 +449,11 @@
           <p class="text-slate-500 text-sm mt-1">Upload your pricing Excel sheets, manage live catalog, and export customer enquiries.</p>
         </div>
 
-        <div class="flex items-center gap-3">
+        <div class="flex flex-wrap items-center gap-2.5">
+          <button onclick="setAdminTab('manual')" class="px-4 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-sm shadow-sm transition flex items-center gap-2">
+            <i class="fa-solid fa-book-open"></i>
+            <span>User Manual (मार्गदर्शिका)</span>
+          </button>
           <button onclick="downloadEnquiriesExcel()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-sm transition flex items-center gap-2">
             <i class="fa-solid fa-file-excel"></i>
             <span>Download Enquiries (Excel)</span>
@@ -525,6 +529,10 @@
         <button onclick="setAdminTab('settings')" id="admin-tab-btn-settings" class="admin-nav-tab px-5 py-3 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition flex items-center gap-2 whitespace-nowrap">
           <i class="fa-solid fa-gear"></i>
           <span>Business Settings</span>
+        </button>
+        <button onclick="setAdminTab('manual')" id="admin-tab-btn-manual" class="admin-nav-tab px-5 py-3 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition flex items-center gap-2 whitespace-nowrap">
+          <i class="fa-solid fa-book-open text-orange-600"></i>
+          <span>User Manual (मार्गदर्शिका)</span>
         </button>
       </div>
 
@@ -827,6 +835,210 @@
             </div>
           </div>
 
+        </div>
+
+      </div>
+
+      <!-- ============================================== -->
+      <!-- ADMIN TAB 5: USER MANUAL (वापरकर्ता मार्गदर्शिका)-->
+      <!-- ============================================== -->
+      <div id="admin-panel-manual" class="hidden space-y-6">
+        
+        <!-- Manual Header Card -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-orange-50 rounded-full blur-3xl -z-0 opacity-70"></div>
+          <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+            <div>
+              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 text-orange-800 text-xs font-bold uppercase tracking-wider mb-2">
+                <i class="fa-solid fa-book-open"></i> अधिकृत वापरकर्ता मार्गदर्शिका
+              </div>
+              <h3 class="text-2xl font-black text-slate-900 tracking-tight">ॐ ओम ट्रेडर्स - ॲडमिन वापरकर्ता मॅन्युअल</h3>
+              <p class="text-xs sm:text-sm text-slate-500 mt-1">कळवण, नाशिक, महाराष्ट्र • बिल्डिंग व प्लंबिंग मटेरियल सप्लायर</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+                <i class="fa-solid fa-print"></i> Print Manual
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Jump Navigation Grid -->
+          <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <a href="#manual-sec-login" class="p-3 rounded-2xl bg-slate-50 hover:bg-orange-50 hover:border-orange-200 border border-slate-200 transition text-center group">
+              <div class="text-lg text-orange-600 mb-1"><i class="fa-solid fa-key"></i></div>
+              <div class="text-xs font-bold text-slate-800 group-hover:text-orange-600">१. लॉगिन कसे करावे</div>
+            </a>
+            <a href="#manual-sec-recovery" class="p-3 rounded-2xl bg-slate-50 hover:bg-orange-50 hover:border-orange-200 border border-slate-200 transition text-center group">
+              <div class="text-lg text-orange-600 mb-1"><i class="fa-solid fa-envelope-circle-check"></i></div>
+              <div class="text-xs font-bold text-slate-800 group-hover:text-orange-600">२. पासवर्ड विसरलात तर</div>
+            </a>
+            <a href="#manual-sec-status" class="p-3 rounded-2xl bg-slate-50 hover:bg-orange-50 hover:border-orange-200 border border-slate-200 transition text-center group">
+              <div class="text-lg text-orange-600 mb-1"><i class="fa-solid fa-arrows-rotate"></i></div>
+              <div class="text-xs font-bold text-slate-800 group-hover:text-orange-600">३. स्टेटस कसे बदलावे</div>
+            </a>
+            <a href="#manual-sec-excel" class="p-3 rounded-2xl bg-slate-50 hover:bg-orange-50 hover:border-orange-200 border border-slate-200 transition text-center group">
+              <div class="text-lg text-orange-600 mb-1"><i class="fa-solid fa-file-excel"></i></div>
+              <div class="text-xs font-bold text-slate-800 group-hover:text-orange-600">४. एक्सेल रेट लिस्ट अपलोड</div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Section 1: Admin Login -->
+        <div id="manual-sec-login" class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-lg">
+              १
+            </div>
+            <div>
+              <h4 class="text-lg font-black text-slate-900">ॲडमिन पोर्टलमध्ये लॉगिन कसे करावे?</h4>
+              <p class="text-xs text-slate-500">How to login to Admin Portal from any device</p>
+            </div>
+          </div>
+
+          <div class="space-y-3 text-sm text-slate-700 leading-relaxed pl-2 sm:pl-12">
+            <div class="flex items-start gap-2.5">
+              <span class="w-5 h-5 rounded-full bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center mt-0.5 shrink-0">1</span>
+              <span>वेबसाईटच्या वरच्या उजव्या कोपऱ्यात असलेल्या <strong class="text-slate-900">"Login"</strong> बटणावर क्लिक करा.</span>
+            </div>
+            <div class="flex items-start gap-2.5">
+              <span class="w-5 h-5 rounded-full bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center mt-0.5 shrink-0">2</span>
+              <span>पासवर्ड टाका: <code class="font-mono font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-200">Amit@OmTraders</code> किंवा खालील <strong>Autofill "Amit@OmTraders"</strong> वर क्लिक करा.</span>
+            </div>
+            <div class="flex items-start gap-2.5">
+              <span class="w-5 h-5 rounded-full bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center mt-0.5 shrink-0">3</span>
+              <span><strong>"Remember me on this device"</strong> टिक ठेवा जेणेकरून त्याच फोन किंवा लॅपटॉपवर वारंवार पासवर्ड टाकावा लागणार नाही.</span>
+            </div>
+            <div class="flex items-start gap-2.5">
+              <span class="w-5 h-5 rounded-full bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center mt-0.5 shrink-0">4</span>
+              <span><strong>"Unlock Admin Portal"</strong> वर क्लिक करताच तुम्ही थेट ॲडमिन डॅशबोर्डमध्ये प्रवेश कराल.</span>
+            </div>
+
+            <div class="mt-4 p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs">
+              <strong>सर्व उपकरणांसाठी मास्टर पासवर्ड्स:</strong> 
+              <code class="font-mono font-bold text-orange-600">Amit@OmTraders</code>, 
+              <code class="font-mono font-bold text-slate-700">Amit@123</code>, 
+              <code class="font-mono font-bold text-slate-700">admin123</code>, 
+              <code class="font-mono font-bold text-slate-700">omtraders</code> (केस-इन्सेंसिटिव्ह व स्पेस ऑटो-ट्रिम).
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Forgot Password Recovery -->
+        <div id="manual-sec-recovery" class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-2xl bg-orange-100 text-orange-700 flex items-center justify-center font-bold text-lg">
+              २
+            </div>
+            <div>
+              <h4 class="text-lg font-black text-slate-900">पासवर्ड विसरलात तर काय करावे? (ईमेल रिकव्हरी)</h4>
+              <p class="text-xs text-slate-500">Email Recovery directly to Amit.omtraders@gmail.com</p>
+            </div>
+          </div>
+
+          <div class="space-y-3 text-sm text-slate-700 leading-relaxed pl-2 sm:pl-12">
+            <p>जर तुम्ही पासवर्ड विसरलात किंवा नवीन मोबाईलवरून लॉगिन करत असाल:</p>
+            <div class="flex items-start gap-2.5">
+              <span class="w-5 h-5 rounded-full bg-orange-100 text-orange-800 font-bold text-xs flex items-center justify-center mt-0.5 shrink-0">1</span>
+              <span>लॉगिन बॉक्समध्ये खाली असलेल्या <strong class="text-orange-600">"Forgot Password?"</strong> वर क्लिक करा.</span>
+            </div>
+            <div class="flex items-start gap-2.5">
+              <span class="w-5 h-5 rounded-full bg-orange-100 text-orange-800 font-bold text-xs flex items-center justify-center mt-0.5 shrink-0">2</span>
+              <span>केशरी रंगाच्या <strong>"Send Password to Amit.omtraders@gmail.com"</strong> बटणावर क्लिक करा.</span>
+            </div>
+            <div class="flex items-start gap-2.5">
+              <span class="w-5 h-5 rounded-full bg-orange-100 text-orange-800 font-bold text-xs flex items-center justify-center mt-0.5 shrink-0">3</span>
+              <span>अमित यांच्या ईमेलवर (<strong class="text-slate-900">Amit.omtraders@gmail.com</strong>) चालू पासवर्ड, मास्टर पासवर्ड व <strong class="text-blue-600">६-अंकी ओटीपी कोड</strong> येईल.</span>
+            </div>
+            <div class="flex items-start gap-2.5">
+              <span class="w-5 h-5 rounded-full bg-orange-100 text-orange-800 font-bold text-xs flex items-center justify-center mt-0.5 shrink-0">4</span>
+              <span>स्क्रीनवर मिळालेला ६-अंकी कोड (किंवा आपत्कालीन मास्टर पिन <code class="font-mono font-bold text-orange-600">Amit789</code>) टाका, नवीन पासवर्ड लिहा आणि <strong>"Confirm & Update Password Now"</strong> दाबा. पासवर्ड त्वरित बदलून तुम्ही लॉगिन व्हाल!</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Change Status -->
+        <div id="manual-sec-status" class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-lg">
+              ३
+            </div>
+            <div>
+              <h4 class="text-lg font-black text-slate-900">ग्राहकांच्या इन्क्वायरीचे स्टेटस (Status) कसे बदलावे?</h4>
+              <p class="text-xs text-slate-500">2 easy ways to update lead workflow</p>
+            </div>
+          </div>
+
+          <div class="space-y-4 text-sm text-slate-700 leading-relaxed pl-2 sm:pl-12">
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+              <h5 class="font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                <i class="fa-solid fa-bolt text-orange-600"></i> मार्ग १: टेबलमधील १-क्लिक ड्रॉपडाऊन (सर्वात वेगवान)
+              </h5>
+              <p class="text-xs text-slate-600">टेबलमधील <strong>STATUS</strong> कॉलममध्ये थेट स्टेटस बॅजवर क्लिक करा (उदा. <code>New</code> किंवा <code>Contacted</code>) आणि खालीलपैकी योग्य पर्याय निवडा:</p>
+              <div class="flex flex-wrap gap-2 mt-2.5 text-xs">
+                <span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 font-bold border border-amber-300">New (नवीन)</span>
+                <span class="px-2.5 py-1 rounded-full bg-blue-100 text-blue-900 font-bold border border-blue-300">Contacted (संपर्क केला)</span>
+                <span class="px-2.5 py-1 rounded-full bg-purple-100 text-purple-900 font-bold border border-purple-300">Quotation Sent (दर पाठवले)</span>
+                <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-900 font-bold border border-emerald-300">Closed / Won (ऑर्डर पूर्ण)</span>
+                <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 font-bold border border-slate-300">Archived (संग्रहित)</span>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+              <h5 class="font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                <i class="fa-solid fa-eye text-blue-600"></i> मार्ग २: View डिटेल्स पॉपअपमधून
+              </h5>
+              <p class="text-xs text-slate-600">उजव्या बाजूला असलेल्या <strong class="text-blue-600">"View" (👁️)</strong> बटणावर क्लिक करा. संपूर्ण साहित्याची यादी पाहून तळाशी असलेल्या <strong>Update Status</strong> ड्रॉपडाऊनमधून स्टेटस बदला.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: Excel Rate List Upload -->
+        <div id="manual-sec-excel" class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-lg">
+              ४
+            </div>
+            <div>
+              <h4 class="text-lg font-black text-slate-900">एक्सेल (Excel) रेट लिस्ट कशी अपलोड करावी?</h4>
+              <p class="text-xs text-slate-500">Instant Excel SheetJS live catalogue uploader</p>
+            </div>
+          </div>
+
+          <div class="space-y-3 text-sm text-slate-700 leading-relaxed pl-2 sm:pl-12">
+            <div class="flex items-start gap-2.5">
+              <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center mt-0.5 shrink-0">1</span>
+              <span><strong>"Excel Upload & Publish"</strong> टॅबवर जा.</span>
+            </div>
+            <div class="flex items-start gap-2.5">
+              <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center mt-0.5 shrink-0">2</span>
+              <span>तुमची एक्सेल फाईल (<code>.xlsx</code> किंवा <code>.csv</code>) बॉक्समध्ये ड्रॅग & ड्रॉप करा किंवा <strong>"Browse Excel File"</strong> दाबा.</span>
+            </div>
+            <div class="flex items-start gap-2.5">
+              <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center mt-0.5 shrink-0">3</span>
+              <span>सिस्टीम आपोआप <code>Particulars</code> / <code>Rate</code> / <code>UOM</code> / <code>Category</code> कॉलम मॅप करेल.</span>
+            </div>
+            <div class="flex items-start gap-2.5">
+              <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center mt-0.5 shrink-0">4</span>
+              <span>खाली दिसणाऱ्या प्रिव्ह्यू टेबलमध्ये दर तपासा आणि हिरवे <strong>"Publish to Website Now"</strong> बटण दाबा. सर्व दर तत्काळ वेबसाईटवर लाईव्ह होतील!</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5: Export to Excel -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-2xl bg-purple-100 text-purple-800 flex items-center justify-center font-bold text-lg">
+              ५
+            </div>
+            <div>
+              <h4 class="text-lg font-black text-slate-900">ग्राहकांच्या इन्क्वायरीज एक्सेलमध्ये कशा डाऊनलोड कराव्यात?</h4>
+              <p class="text-xs text-slate-500">1-click customer report export</p>
+            </div>
+          </div>
+
+          <div class="space-y-3 text-sm text-slate-700 leading-relaxed pl-2 sm:pl-12">
+            <p><strong>"Customer Enquiries"</strong> टॅबमध्ये वर उजव्या बाजूला असलेल्या <strong class="text-emerald-700">"Export to Excel"</strong> बटणावर क्लिक करा. संपूर्ण अहवाल (नाव, फोन, ईमेल, तारीख, साहित्याची यादी आणि रक्कम) काही सेकंदांत <code>Customer_Enquiries_Report.xlsx</code> म्हणून डाऊनलोड होईल.</p>
+          </div>
         </div>
 
       </div>

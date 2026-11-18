@@ -1256,10 +1256,11 @@ function setAdminTab(tab) {
   }
 
   // Toggle tab panels
-  document.getElementById('admin-panel-leads').classList.toggle('hidden', tab !== 'leads');
-  document.getElementById('admin-panel-excel').classList.toggle('hidden', tab !== 'excel');
-  document.getElementById('admin-panel-catalog').classList.toggle('hidden', tab !== 'catalog');
-  document.getElementById('admin-panel-settings').classList.toggle('hidden', tab !== 'settings');
+  document.getElementById('admin-panel-leads')?.classList.toggle('hidden', tab !== 'leads');
+  document.getElementById('admin-panel-excel')?.classList.toggle('hidden', tab !== 'excel');
+  document.getElementById('admin-panel-catalog')?.classList.toggle('hidden', tab !== 'catalog');
+  document.getElementById('admin-panel-settings')?.classList.toggle('hidden', tab !== 'settings');
+  document.getElementById('admin-panel-manual')?.classList.toggle('hidden', tab !== 'manual');
 
   if (tab === 'leads') renderAdminLeadsTable();
   if (tab === 'catalog') renderAdminCatalogTable();
@@ -1311,11 +1312,16 @@ function renderAdminLeadsTable() {
     const tr = document.createElement('tr');
     tr.className = 'hover:bg-slate-50/80 transition';
 
-    let statusBadgeColor = 'bg-slate-100 text-slate-700';
-    if (lead.status === 'New') statusBadgeColor = 'bg-amber-100 text-amber-800';
-    else if (lead.status === 'Contacted') statusBadgeColor = 'bg-blue-100 text-blue-800';
-    else if (lead.status === 'Quotation Sent') statusBadgeColor = 'bg-purple-100 text-purple-800';
-    else if (lead.status === 'Closed / Won') statusBadgeColor = 'bg-emerald-100 text-emerald-800';
+    let statusClass = 'bg-amber-50 text-amber-900 border-amber-300';
+    if (lead.status === 'Contacted') statusClass = 'bg-blue-50 text-blue-900 border-blue-300';
+    else if (lead.status === 'Quotation Sent') statusClass = 'bg-purple-50 text-purple-900 border-purple-300';
+    else if (lead.status === 'Closed / Won') statusClass = 'bg-emerald-50 text-emerald-900 border-emerald-300';
+    else if (lead.status === 'Archived') statusClass = 'bg-slate-50 text-slate-700 border-slate-300';
+
+    const statusOptions = ['New', 'Contacted', 'Quotation Sent', 'Closed / Won', 'Archived'];
+    const optionsHtml = statusOptions.map(opt => `
+      <option value="${opt}" ${lead.status === opt ? 'selected' : ''}>${opt}</option>
+    `).join('');
 
     const itemsSummary = (lead.items && lead.items.length > 0)
       ? `${lead.items.length} items (${lead.items.map(i => i.name).slice(0, 1).join(', ')}${lead.items.length > 1 ? '...' : ''})`
@@ -1341,16 +1347,35 @@ function renderAdminLeadsTable() {
         <span class="font-bold text-slate-900 text-xs">${formatCurrency(lead.total)}</span>
       </td>
       <td class="py-3 px-4 text-center">
-        <span class="px-2.5 py-1 rounded-full text-[11px] font-semibold ${statusBadgeColor}">${escapeHtml(lead.status || 'New')}</span>
+        <select onchange="updateLeadStatus('${lead.id}', this.value)" 
+          title="Click to change enquiry status"
+          class="text-xs font-semibold px-2.5 py-1 rounded-full border cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-500 shadow-sm transition ${statusClass}">
+          ${optionsHtml}
+        </select>
       </td>
       <td class="py-3 px-4 text-right">
-        <button onclick="viewEnquiryDetails('${lead.id}')" class="px-2.5 py-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs font-semibold transition">
+        <button onclick="viewEnquiryDetails('${lead.id}')" class="px-2.5 py-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs font-semibold transition flex items-center gap-1.5 ml-auto">
           <i class="fa-solid fa-eye"></i> View
         </button>
       </td>
     `;
     tbody.appendChild(tr);
   });
+}
+
+// 1-Click Update Status directly from Table or Modal
+function updateLeadStatus(leadId, newStatus) {
+  const lead = AppState.enquiries.find(e => e.id === leadId);
+  if (!lead) return;
+  lead.status = newStatus;
+  saveData(STORAGE_KEYS.ENQUIRIES, AppState.enquiries);
+  updateAdminDashboardStats();
+  renderAdminLeadsTable();
+  showToast(`Enquiry ${lead.id} (${lead.name}) marked as "${newStatus}"`, 'success');
+}
+
+function updateEnquiryStatus(leadId, newStatus) {
+  updateLeadStatus(leadId, newStatus);
 }
 
 function viewEnquiryDetails(leadId) {
@@ -1408,12 +1433,9 @@ function viewEnquiryDetails(leadId) {
 
 function updateLeadStatusFromModal(newStatus) {
   if (!AppState.currentViewingEnquiry) return;
-  AppState.currentViewingEnquiry.status = newStatus;
-  saveData(STORAGE_KEYS.ENQUIRIES, AppState.enquiries);
-  document.getElementById('modal-enquiry-status').textContent = newStatus;
-  renderAdminLeadsTable();
-  updateAdminDashboardStats();
-  showToast(`Enquiry marked as "${newStatus}"`, 'success');
+  updateLeadStatus(AppState.currentViewingEnquiry.id, newStatus);
+  const modalStatusEl = document.getElementById('modal-enquiry-status');
+  if (modalStatusEl) modalStatusEl.textContent = newStatus;
 }
 
 function closeEnquiryModal() {
