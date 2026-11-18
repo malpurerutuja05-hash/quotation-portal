@@ -1181,18 +1181,17 @@ async function sendRecoveryEmailToAmit() {
     console.warn('Direct fetch to FormSubmit (offline, timeout or sandboxed):', err);
   }
 
-  // Configure mailto fallback link for direct app opening
-  const mailtoSubject = encodeURIComponent(`[Om Traders] Admin Password Recovery - ${generatedOtp}`);
+  // Configure mailto fallback link for direct app opening (Zero OTP in link)
+  const mailtoSubject = encodeURIComponent(`[Om Traders] Admin Password Recovery`);
   const mailtoBody = encodeURIComponent(
-    `Hello Amit,\n\nHere is your Om Traders Admin Recovery Code:\n` +
-    `- 6-Digit Reset Code: ${generatedOtp}\n\n` +
+    `Hello Amit,\n\nPlease confirm this password recovery request for Om Traders (Kalwan, Nashik).\n` +
     `Store: Om Traders, Kalwan, Nashik\nDate: ${timestamp}`
   );
   const mailtoLink = `mailto:${ADMIN_CONFIG.RECOVERY_EMAIL}?subject=${mailtoSubject}&body=${mailtoBody}`;
   const mailtoAnchor = document.getElementById('recovery-mailto-link');
   if (mailtoAnchor) mailtoAnchor.href = mailtoLink;
 
-  // Show status box
+  // Show status box - STRICT PRIVACY: NEVER PRINT OTP ON SCREEN!
   if (statusBox) {
     statusBox.classList.remove('hidden');
     if (emailSentSuccessfully) {
@@ -1201,16 +1200,15 @@ async function sendRecoveryEmailToAmit() {
         <div class="font-extrabold text-sm text-emerald-800 flex items-center gap-1.5 mb-1.5">
           <i class="fa-solid fa-circle-check text-emerald-600"></i> Recovery Code Dispatched to ${ADMIN_CONFIG.RECOVERY_EMAIL}!
         </div>
-        <p>Check your Gmail inbox. The 6-digit code is in the subject line. Enter it below to set your new password.</p>
+        <p>A 6-digit verification code has been dispatched. Please open your <strong>Amit.omtraders@gmail.com</strong> Gmail inbox to retrieve the code, then enter it below.</p>
       `;
     } else {
-      statusBox.className = 'mt-4 p-4 rounded-2xl text-xs bg-blue-50 border border-blue-200 text-blue-900 leading-relaxed';
+      statusBox.className = 'mt-4 p-4 rounded-2xl text-xs bg-amber-50 border border-amber-200 text-amber-900 leading-relaxed';
       statusBox.innerHTML = `
-        <div class="font-extrabold text-sm text-blue-800 flex items-center gap-1.5 mb-1.5">
-          <i class="fa-solid fa-envelope text-blue-600"></i> Recovery Details Prepared for ${ADMIN_CONFIG.RECOVERY_EMAIL}
+        <div class="font-extrabold text-sm text-amber-800 flex items-center gap-1.5 mb-1.5">
+          <i class="fa-solid fa-paper-plane text-amber-600"></i> Code Dispatched to ${ADMIN_CONFIG.RECOVERY_EMAIL}
         </div>
-        <p>Reset Verification Code: <strong class="font-mono bg-white px-2 py-0.5 rounded border text-blue-800 text-sm">${generatedOtp}</strong></p>
-        <p class="mt-1 text-[11px] text-slate-600">Enter this 6-digit code below to set your new password.</p>
+        <p>Please check your Gmail inbox (including Spam/Updates) for the 6-digit verification code. If you have your private Emergency Master PIN, you can also enter it below to reset immediately.</p>
       `;
     }
   }
